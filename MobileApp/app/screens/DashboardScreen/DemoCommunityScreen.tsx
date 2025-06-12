@@ -31,12 +31,12 @@ export const DemoCommunityScreen: FC<DashboardTabScreenProps<"DemoCommunity">> =
         />
         <Text
           preset="subheading"
-          tx="demoCommunityScreen:makeIgniteEvenBetterTitle"
+          tx="demoCommunityScreen:makeEcoLifeEvenBetterTitle"
           style={themed($sectionTitle)}
         />
-        <Text tx="demoCommunityScreen:makeIgniteEvenBetter" style={themed($description)} />
+        <Text tx="demoCommunityScreen:makeEcoLifeEvenBetter" style={themed($description)} />
         <ListItem
-          tx="demoCommunityScreen:contributeToIgniteLink"
+          tx="demoCommunityScreen:contributeToEcoLifeLink"
           leftIcon="github"
           rightIcon={isRTL ? "caretLeft" : "caretRight"}
           onPress={() => openLinkInBrowser("https://github.com/infinitered/ignite")}
