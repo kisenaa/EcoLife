@@ -1,38 +1,40 @@
 const palette = {
-  neutral100: "#FFFFFF",
-  neutral200: "#F4F2F1",
-  neutral300: "#D7CEC9",
-  neutral400: "#B6ACA6",
-  neutral500: "#978F8A",
-  neutral600: "#564E4A",
-  neutral700: "#3C3836",
-  neutral800: "#191015",
-  neutral900: "#000000",
+  // A neutral scale from off-white/mint to a dark forest green
+  neutral100: "#F8FBF8", // Very light off-white with a hint of green (for backgrounds)
+  neutral200: "#F8FBF8", // Soft mint green (for separators, subtle backgrounds)
+  neutral300: "#C8E6C9",
+  neutral400: "#A5D6A7",
+  neutral500: "#81C784", // A mid-tone gray-green (for disabled states, dim text)
+  neutral600: "#66BB6A",
+  neutral700: "#43A047", // A strong, dark green (for icons)
+  neutral800: "#2E7D32", // A very dark green (for primary text)
+  neutral900: "#1B5E20", // The darkest green
 
-  primary100: "#F4E0D9",
-  primary200: "#E8C1B4",
-  primary300: "#DDA28E",
-  primary400: "#D28468",
-  primary500: "#C76542",
-  primary600: "#A54F31",
+  // A vibrant, leafy green for primary actions
+  primary100: "#C8E6C9",
+  primary200: "#A5D6A7",
+  primary300: "#81C784",
+  primary400: "#66BB6A",
+  primary500: "#4CAF50", // The main brand green
+  primary600: "#388E3C", // A darker shade for pressed states
 
-  secondary100: "#DCDDE9",
-  secondary200: "#BCC0D6",
-  secondary300: "#9196B9",
-  secondary400: "#626894",
-  secondary500: "#41476E",
+  // A warm, earthy brown for secondary elements
+  secondary100: "#D7CCC8",
+  secondary200: "#BCAAA4",
+  secondary300: "#A1887F",
+  secondary400: "#8D6E63",
+  secondary500: "#795548", // The main secondary brown
 
-  accent100: "#FFEED4",
-  accent200: "#FFE1B2",
-  accent300: "#FDD495",
-  accent400: "#FBC878",
-  accent500: "#FFBB50",
+  // A sunny yellow for accents and highlights
+  accent100: "#FFF9C4",
+  accent200: "#FFF59D",
+  accent300: "#FFF176",
+  accent400: "#FFEE58",
+  accent500: "#FFEB3B", // The main accent yellow
 
-  angry100: "#F2D6CD",
-  angry500: "#C03403",
-
-  overlay20: "rgba(25, 16, 21, 0.2)",
-  overlay50: "rgba(25, 16, 21, 0.5)",
+  // A standard red for errors
+  angry100: "#FFCDD2",
+  angry500: "#D32F2F",
 } as const
 
 export const colors = {

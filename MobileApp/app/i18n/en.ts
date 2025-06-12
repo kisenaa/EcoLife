@@ -9,8 +9,8 @@ const en = {
   },
   welcomeScreen: {
     postscript:
-      "psst  — This probably isn't what your app looks like. (Unless your designer handed you these screens, and in that case, ship it!)",
-    readyForLaunch: "Your app, almost ready for launch!",
+      "psst  — This probably isn't what your app is going to look like. (Unless your app is a list of cool apps!)",
+    readyForLaunch: "Your app, EcoLife, is ready for launch!",
     exciting: "(ohh, this is exciting!)",
     letsGo: "Let's go!",
   },
@@ -34,14 +34,16 @@ const en = {
   },
   loginScreen: {
     logIn: "Log In",
-    enterDetails:
-      "Enter your details below to unlock top secret info. You'll never guess what we've got waiting. Or maybe you will; it's not rocket science here.",
-    emailFieldLabel: "Email",
+    enterDetails: "Enter your username and password to login",
+    usernameFieldLabel: "Username",
+    usernameFieldPlaceholder: "Username",
     passwordFieldLabel: "Password",
-    emailFieldPlaceholder: "Enter your email address",
-    passwordFieldPlaceholder: "Super secret password here",
-    tapToLogIn: "Tap to log in!",
-    hint: "Hint: you can use any email address and your favorite password :)",
+    passwordFieldPlaceholder: "Password",
+    tapToLogIn: "Login",
+    forgotUsername: "Forgot Username?",
+    forgotPassword: "Forgot Password?",
+    dontHaveAccount: "Don't have an account?",
+    register: "Register",
   },
   DashboardNavigator: {
     componentsTab: "Components",
@@ -57,10 +59,10 @@ const en = {
     joinUsOnSlack:
       "Wish there was a place to connect with React Native engineers around the world? Join the conversation in the Infinite Red Community Slack! Our growing community is a safe space to ask questions, learn from others, and grow your network.",
     joinSlackLink: "Join the Slack Community",
-    makeIgniteEvenBetterTitle: "Make Ignite even better",
-    makeIgniteEvenBetter:
-      "Have an idea to make Ignite even better? We're happy to hear that! We're always looking for others who want to help us build the best React Native tooling out there. Join us over on GitHub to join us in building the future of Ignite.",
-    contributeToIgniteLink: "Contribute to Ignite",
+    makeEcoLifeEvenBetterTitle: "Make EcoLife even better",
+    makeEcoLifeEvenBetter:
+      "Have an idea to make EcoLife even better? We're happy to hear that! We're always looking for others who want to help us build the best React Native tooling out there. Join us over on GitHub to join us in building the future of EcoLife.",
+    contributeToEcoLifeLink: "Contribute to EcoLife",
     theLatestInReactNativeTitle: "The latest in React Native",
     theLatestInReactNative: "We're here to keep you current on all React Native has to offer.",
     reactNativeRadioLink: "React Native Radio",
