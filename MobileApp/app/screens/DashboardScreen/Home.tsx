@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View, FlatList, ActivityIndicator } from "react-native"
+import { View, FlatList, ActivityIndicator, ScrollView } from "react-native"
 import { Screen, Text, Button } from "../../components"
 import { DashboardTabScreenProps } from "../../navigators/DashboardNavigator"
 import { useAppTheme } from "@/utils/useAppTheme"
@@ -56,7 +56,12 @@ export const Home: React.FC<DashboardTabScreenProps<"Home">> = function Home(_pr
             onPress={() => navigation.navigate("Plants")}
           />
         </View>
-        <View style={{ flexDirection: "row" }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={themed($plantsScrollContainer)}
+          style={themed($plantsScrollView)}
+        >
           {plantData.map((item) => (
             <GardenPlantCard
               key={item.id}
@@ -64,7 +69,7 @@ export const Home: React.FC<DashboardTabScreenProps<"Home">> = function Home(_pr
               onNavigate={() => navigation.navigate("PlantDetail", { plantId: item.id })}
             />
           ))}
-        </View>
+        </ScrollView>
       </View>
       <View style={themed($cardSection)}>
         <View style={themed($cardHeader)}>
@@ -121,4 +126,12 @@ const $viewAllButton: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
 const $viewAllButtonText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.palette.primary600,
   fontWeight: "bold",
+})
+const $plantsScrollView: ThemedStyle<ViewStyle> = () => ({
+  // Optional: Add any scroll view specific styles
+})
+
+const $plantsScrollContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  paddingHorizontal: spacing.xs, // Add some padding for better spacing
+  gap: spacing.sm, // Add gap between cards if your React Native version supports it
 })

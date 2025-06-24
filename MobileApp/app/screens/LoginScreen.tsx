@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite"
-import { FC, useRef, useState } from "react"
+import { ComponentType, FC, useMemo, useRef, useState } from "react"
 import { Image, ImageStyle, TextInput, TextStyle, View, ViewStyle } from "react-native"
-import { Button, Screen, Text, TextField } from "../components"
+import { Button, PressableIcon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
 import { AppStackScreenProps } from "../navigators"
 import type { ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
@@ -18,9 +18,13 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
   const authPasswordInput = useRef<TextInput>(null)
   const [authEmail, setAuthEmail] = useState("")
   const [authPassword, setAuthPassword] = useState("")
+  const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
-  const { themed } = useAppTheme()
+  const {
+    themed,
+    theme: { colors },
+  } = useAppTheme()
 
   async function login() {
     setIsLoading(true)
@@ -32,11 +36,23 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       return
     }
     authenticationStore.setAuthToken(data?.session?.access_token)
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Dashboard" }],
-    })
   }
+
+  const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
+    () =>
+      function PasswordRightAccessory(props: TextFieldAccessoryProps) {
+        return (
+          <PressableIcon
+            icon={isAuthPasswordHidden ? "view" : "hidden"}
+            color={colors.palette.neutral800}
+            containerStyle={props.style}
+            size={20}
+            onPress={() => setIsAuthPasswordHidden(!isAuthPasswordHidden)}
+          />
+        )
+      },
+    [isAuthPasswordHidden, colors.palette.neutral800],
+  )
 
   return (
     <Screen preset="scroll" contentContainerStyle={themed($screenContentContainer)}>
@@ -52,17 +68,26 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         returnKeyType="next"
         onSubmitEditing={() => authPasswordInput.current?.focus()}
         blurOnSubmit={false}
-        style={themed($textField)}
+        labelTx="loginScreen:emailFieldLabel"
+        placeholderTx="loginScreen:emailFieldPlaceholder"
+        helper={error}
+        status={error ? "error" : undefined}
+        containerStyle={themed($textField)}
       />
       <TextField
         ref={authPasswordInput}
         value={authPassword}
         onChangeText={setAuthPassword}
         label="Password"
-        secureTextEntry
+        autoComplete="password"
+        autoCorrect={false}
         returnKeyType="done"
+        secureTextEntry={isAuthPasswordHidden}
+        labelTx="loginScreen:passwordFieldLabel"
+        placeholderTx="loginScreen:passwordFieldPlaceholder"
         onSubmitEditing={login}
-        style={themed($textField)}
+        RightAccessory={PasswordRightAccessory}
+        containerStyle={themed($textField)}
       />
       {error ? <Text text={error} style={{ color: "red", marginBottom: 8 }} /> : null}
       <Button text={isLoading ? "Logging in..." : "Log In"} onPress={login} style={themed($tapButton)} disabled={isLoading} />
@@ -79,7 +104,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
 })
 
 const $screenContentContainer: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
-  flex: 1,
+  flexGrow: 1,
   justifyContent: "center",
   paddingVertical: spacing.xxl,
   paddingHorizontal: spacing.lg,

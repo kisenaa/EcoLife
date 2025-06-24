@@ -10,6 +10,8 @@ const en = {
   welcomeScreen: {
     postscript: "psst  — This probably isn't what your app is going to look like. (Unless your app is a list of cool apps!)",
     readyForLaunch: "Your app, EcoLife, is ready for launch!",
+    postscript: "psst  — This probably isn't what your app is going to look like. (Unless your app is a list of cool apps!)",
+    readyForLaunch: "Your app, EcoLife, is ready for launch!",
     exciting: "(ohh, this is exciting!)",
     letsGo: "Let's go!",
   },
@@ -34,6 +36,8 @@ const en = {
   loginScreen: {
     logIn: "Log In",
     enterDetails: "Enter your username and password to login",
+    emailFieldLabel: "Email",
+    emailFieldPlaceholder: "Enter your email address",
     usernameFieldLabel: "Username",
     usernameFieldPlaceholder: "Username",
     passwordFieldLabel: "Password",
