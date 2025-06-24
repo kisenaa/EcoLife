@@ -1,167 +1,96 @@
 import { observer } from "mobx-react-lite"
-import { FC, useEffect, useRef, useState } from "react"
-// eslint-disable-next-line no-restricted-imports
-// MODIFIED: Added Image and View, removed PressableIcon from original code
+import { FC, useRef, useState } from "react"
 import { Image, ImageStyle, TextInput, TextStyle, View, ViewStyle } from "react-native"
-import { Button, Screen, Text, TextField } from "../components" // MODIFIED: Removed unused imports
-import { useStores } from "../models"
+import { Button, Screen, Text, TextField } from "../components"
 import { AppStackScreenProps } from "../navigators"
 import type { ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
+import { signInWithEmail } from "@/services/supabase"
+import { useStores } from "../models"
 
-// ADDED: A placeholder for your app's logo.
-// Make sure you have a logo at this path in your project.
 const appLogo = require("../../assets/images/logo.png")
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
 export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
   const { navigation } = _props
+  const { authenticationStore } = useStores()
   const authPasswordInput = useRef<TextInput>(null)
-
+  const [authEmail, setAuthEmail] = useState("")
   const [authPassword, setAuthPassword] = useState("")
-  // REMOVED: isAuthPasswordHidden state is no longer needed
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const {
-    authenticationStore: { authEmail, setAuthEmail, setAuthToken, validationError },
-  } = useStores()
-
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const { themed } = useAppTheme()
 
-  useEffect(() => {
-    // We'll keep the pre-filled credentials for easy testing
-    setAuthEmail("user@ecolife.app")
-    setAuthPassword("EcoLifeIsAwesome")
-
-    return () => {
-      setAuthPassword("")
-      setAuthEmail("")
+  async function login() {
+    setIsLoading(true)
+    setError("")
+    const { data, error: supaError } = await signInWithEmail(authEmail, authPassword)
+    setIsLoading(false)
+    if (supaError) {
+      setError(supaError.message)
+      return
     }
-  }, [setAuthEmail])
-
-  const error = isSubmitted ? validationError : ""
-
-  function login() {
-    setIsSubmitted(true)
-    if (validationError) return
-
-    setIsSubmitted(false)
-    setAuthPassword("")
-    setAuthEmail("")
-    setAuthToken(String(Date.now()))
-  }
-  // ADDED: Placeholder functions for the new links
-  function forgotUsername() {
-    console.log("Forgot Username pressed")
+    authenticationStore.setAuthToken(data?.session?.access_token)
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Dashboard" }],
+    })
   }
 
-  function forgotPassword() {
-    console.log("Forgot Password pressed")
-  }
-
-  function register() {
-    navigation.navigate("Register")
-  }
-
-  // REMOVED: The PasswordRightAccessory component is no longer needed.
-
-  // MODIFIED: The entire return block is restructured to match your design.
   return (
-    <Screen
-      preset="auto"
-      contentContainerStyle={themed($screenContentContainer)}
-      safeAreaEdges={["top", "bottom"]}
-    >
-      <Image style={themed($logo)} source={appLogo} resizeMode="contain" />
-
-      <Text testID="login-heading" tx="loginScreen:logIn" preset="heading" style={themed($logIn)} />
-      <Text
-        tx="loginScreen:enterDetails"
-        preset="subheading"
-        style={themed($enterDetails)}
+    <Screen preset="scroll" contentContainerStyle={themed($screenContentContainer)}>
+      <Image source={appLogo} style={themed($logo)} resizeMode="contain" />
+      <Text preset="heading" style={themed($logIn)} text="Log In" />
+      <Text preset="subheading" style={themed($enterDetails)} text="Enter your email and password" />
+      <TextField
+        value={authEmail}
+        onChangeText={setAuthEmail}
+        label="Email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        returnKeyType="next"
+        onSubmitEditing={() => authPasswordInput.current?.focus()}
+        blurOnSubmit={false}
+        style={themed($textField)}
       />
-
-      {/* --- Username Field --- */}
-      <View>
-        <TextField
-          value={authEmail}
-          onChangeText={setAuthEmail}
-          containerStyle={themed($textField)}
-          autoCapitalize="none"
-          autoComplete="username" // Changed from "email"
-          autoCorrect={false}
-          keyboardType="email-address"
-          // REMOVED: labelTx
-          placeholderTx="loginScreen:usernameFieldPlaceholder" // MODIFIED: Using username placeholder
-          helper={error}
-          status={error ? "error" : undefined}
-          onSubmitEditing={() => authPasswordInput.current?.focus()}
-        />
-        <Text
-          tx="loginScreen:forgotUsername"
-          style={themed($forgotLink)}
-          onPress={forgotUsername}
-        />
-      </View>
-
-      {/* --- Password Field --- */}
-      <View>
-        <TextField
-          ref={authPasswordInput}
-          value={authPassword}
-          onChangeText={setAuthPassword}
-          containerStyle={themed($textField)}
-          autoCapitalize="none"
-          autoComplete="password"
-          autoCorrect={false}
-          secureTextEntry // MODIFIED: Always true now
-          // REMOVED: labelTx
-          placeholderTx="loginScreen:passwordFieldPlaceholder"
-          onSubmitEditing={login}
-          // REMOVED: RightAccessory
-        />
-        <Text
-          tx="loginScreen:forgotPassword"
-          style={themed($forgotLink)}
-          onPress={forgotPassword}
-        />
-      </View>
-
+      <TextField
+        ref={authPasswordInput}
+        value={authPassword}
+        onChangeText={setAuthPassword}
+        label="Password"
+        secureTextEntry
+        returnKeyType="done"
+        onSubmitEditing={login}
+        style={themed($textField)}
+      />
+      {error ? <Text text={error} style={{ color: 'red', marginBottom: 8 }} /> : null}
       <Button
-        testID="login-button"
-        tx="loginScreen:tapToLogIn"
-        style={themed($tapButton)}
-        preset="reversed"
+        text={isLoading ? "Logging in..." : "Log In"}
         onPress={login}
+        style={themed($tapButton)}
+        disabled={isLoading}
       />
-
-      {/* --- Footer --- */}
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
+        <Text text="Forgot Username?" style={themed($forgotLink)} />
+        <Text text="Forgot Password?" style={themed($forgotLink)} />
+      </View>
       <View style={themed($footer)}>
-        <Text tx="loginScreen:dontHaveAccount" size="md" />
-        <Text
-          tx="loginScreen:register"
-          size="md"
-          weight="bold"
-          style={themed($registerLink)}
-          onPress={register}
-        />
+        <Text text="Don't have an account?" />
+        <Text text="Register" onPress={() => navigation.navigate("Register") } style={themed($loginLink)} />
       </View>
     </Screen>
   )
 })
 
-// --- STYLES ---
-
-// MODIFIED: Main container to center content vertically
 const $screenContentContainer: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   flex: 1,
   justifyContent: "center",
   paddingVertical: spacing.xxl,
   paddingHorizontal: spacing.lg,
-  backgroundColor: colors.background, // Match screen background
+  backgroundColor: colors.background,
 })
 
-// ADDED: Style for the logo
 const $logo: ThemedStyle<ImageStyle> = ({ spacing }) => ({
   height: 100,
   width: "60%",
@@ -169,23 +98,20 @@ const $logo: ThemedStyle<ImageStyle> = ({ spacing }) => ({
   marginBottom: spacing.xxl,
 })
 
-// MODIFIED: Centered text styles
 const $logIn: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.sm,
   textAlign: "center",
 })
 
 const $enterDetails: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  marginBottom: spacing.xxl, // Increased margin to add more space
+  marginBottom: spacing.xxl,
   textAlign: "center",
 })
 
-// MODIFIED: TextField has less bottom margin now because of the "Forgot" link
 const $textField: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xs,
 })
 
-// ADDED: Style for the "Forgot..." links
 const $forgotLink: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
   textAlign: "right",
   color: colors.textDim,
@@ -193,12 +119,10 @@ const $forgotLink: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
   paddingHorizontal: spacing.xs,
 })
 
-// MODIFIED: Button has more top margin
 const $tapButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.lg,
 })
 
-// ADDED: Styles for the footer section
 const $footer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",
   justifyContent: "center",
@@ -206,8 +130,8 @@ const $footer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xl,
 })
 
-const $registerLink: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  color: colors.text, // Using default text color for bold "Register"
+const $loginLink: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.text,
   fontWeight: "bold",
   marginLeft: spacing.xs,
 })

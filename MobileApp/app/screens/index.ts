@@ -6,4 +6,7 @@ export * from "./DashboardScreen/DemoCommunityScreen"
 export * from "./DashboardScreen/DemoDebugScreen"
 export * from "./DemoShowroomScreen/DemoShowroomScreen"
 export * from "./ErrorScreen/ErrorBoundary"
-// export other screens here
+export * from "./LearnScreen"
+export * from "./HabitsScreen"
+export * from "./PlantsScreen"
+export * from "./PlantDetailScreen"

@@ -8,6 +8,8 @@ import {
   type ThemedStyleArray,
   lightTheme,
   darkTheme,
+  lightThemeForest,
+  darkThemeForest,
 } from "@/theme"
 import * as SystemUI from "expo-system-ui"
 
@@ -75,7 +77,7 @@ interface UseAppThemeValue {
  * @returns {UseAppThemeReturn} An object containing various theming values and utilities.
  * @throws {Error} If used outside of a ThemeProvider.
  */
-export const useAppTheme = (): UseAppThemeValue => {
+export const useAppTheme = (options?: { useForest?: boolean }) : UseAppThemeValue => {
   const navTheme = useNavTheme()
   const context = useContext(ThemeContext)
   if (!context) {
@@ -89,7 +91,13 @@ export const useAppTheme = (): UseAppThemeValue => {
     [overrideTheme, navTheme],
   )
 
-  const themeVariant: Theme = useMemo(() => themeContextToTheme(themeContext), [themeContext])
+  // Add support for eco alt palette
+  const themeVariant: Theme = useMemo(() => {
+    if (options?.useForest) {
+      return themeContext === "dark" ? darkThemeForest : lightThemeForest
+    }
+    return themeContextToTheme(themeContext)
+  }, [themeContext, options])
 
   const themed = useCallback(
     <T>(styleOrStyleFn: ThemedStyle<T> | StyleProp<T> | ThemedStyleArray<T>) => {
@@ -101,8 +109,6 @@ export const useAppTheme = (): UseAppThemeValue => {
           return f
         }
       })
-
-      // Flatten the array of styles into a single object
       return Object.assign({}, ...stylesArray) as T
     },
     [themeVariant],

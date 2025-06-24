@@ -34,6 +34,10 @@ export type AppStackParamList = {
   Register: undefined
   Intro: undefined
   Dashboard: NavigatorScreenParams<DashboardTabParamList>
+  Learn: undefined
+  Habits: undefined
+  Plants: undefined
+  PlantDetail: { plantId: string }
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
@@ -70,19 +74,26 @@ const AppStack = observer(function AppStack() {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={isAuthenticated ? "Welcome" : "Intro"}
+      initialRouteName={isAuthenticated ? "Dashboard" : "Intro"}
     >
       {isAuthenticated ? (
         <>
           <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
-
           <Stack.Screen name="Dashboard" component={DashboardNavigator} />
+          <Stack.Screen name="Learn" component={Screens.LearnScreen} />
+          <Stack.Screen name="Habits" component={Screens.HabitsScreen} />
+          <Stack.Screen name="Plants" component={Screens.PlantsScreen} />
+          <Stack.Screen name="PlantDetail" component={Screens.PlantDetailScreen} />
         </>
       ) : (
         <>
           <Stack.Screen name="Intro" component={Screens.IntroScreen} />
           <Stack.Screen name="Login" component={Screens.LoginScreen} />
           <Stack.Screen name="Register" component={Screens.RegisterScreen} />
+          <Stack.Screen name="Learn" component={Screens.LearnScreen} />
+          <Stack.Screen name="Habits" component={Screens.HabitsScreen} />
+          <Stack.Screen name="Plants" component={Screens.PlantsScreen} />
+          <Stack.Screen name="PlantDetail" component={Screens.PlantDetailScreen} />
         </>
       )}
 

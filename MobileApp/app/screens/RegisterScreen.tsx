@@ -1,161 +1,186 @@
 import { observer } from "mobx-react-lite"
-import { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
-// eslint-disable-next-line no-restricted-imports
-import { TextInput, TextStyle, ViewStyle } from "react-native"
-import {
-  Button,
-  PressableIcon,
-  Screen,
-  Text,
-  TextField,
-  TextFieldAccessoryProps,
-} from "../components"
-import { useStores } from "../models"
+import { FC, useRef, useState } from "react"
+import { View, TextInput, ImageStyle, TextStyle, ViewStyle, ScrollView } from "react-native"
+import { Button, Screen, Text, TextField, AutoImage } from "../components"
 import { AppStackScreenProps } from "../navigators"
 import type { ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
+import { signUpWithEmail } from "@/services/supabase"
+
+const appLogo = require("../../assets/images/logo.png")
 
 interface RegisterScreenProps extends AppStackScreenProps<"Register"> {}
 
 export const RegisterScreen: FC<RegisterScreenProps> = observer(function RegisterScreen(_props) {
-  const authPasswordInput = useRef<TextInput>(null)
   const { navigation } = _props
+  const { themed, theme: { colors } } = useAppTheme()
 
-  const [authPassword, setAuthPassword] = useState("")
-  const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [attemptsCount, setAttemptsCount] = useState(0)
-  const {
-    authenticationStore: { authEmail, setAuthEmail, validationError },
-  } = useStores()
+  const emailInput = useRef<TextInput>(null)
+  const passwordInput = useRef<TextInput>(null)
+  const passwordConfirmInput = useRef<TextInput>(null)
 
-  const {
-    themed,
-    theme: { colors },
-  } = useAppTheme()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [passwordConfirmation, setPasswordConfirmation] = useState("")
+  const [isPasswordHidden, setIsPasswordHidden] = useState(true)
+  const [isConfirmPasswordHidden, setIsConfirmPasswordHidden] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  useEffect(() => {
-    // Here is where you could fetch credentials from keychain or storage
-    // and pre-fill the form fields.
-    setAuthEmail("ignite@infinite.red")
-    setAuthPassword("ign1teIsAwes0m3")
-
-    // Return a "cleanup" function that React will run when the component unmounts
-    return () => {
-      setAuthPassword("")
-      setAuthEmail("")
-    }
-  }, [setAuthEmail])
-
-  const error = isSubmitted ? validationError : ""
-
-  function register() {
-    setIsSubmitted(true)
-    setAttemptsCount(attemptsCount + 1)
-
-    if (validationError) return
-
-    // Make a request to your server to get an authentication token.
-    // If successful, reset the fields and set the token.
+  function goLogin() {
     navigation.navigate("Login")
   }
 
-  const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
-    () =>
-      function PasswordRightAccessory(props: TextFieldAccessoryProps) {
-        return (
-          <PressableIcon
-            icon={isAuthPasswordHidden ? "view" : "hidden"}
-            color={colors.palette.neutral800}
-            containerStyle={props.style}
-            size={20}
-            onPress={() => setIsAuthPasswordHidden(!isAuthPasswordHidden)}
-          />
-        )
-      },
-    [isAuthPasswordHidden, colors.palette.neutral800],
-  )
+  async function register() {
+    setError("")
+    if (!email || !password || !passwordConfirmation) {
+      setError("Please fill all fields.")
+      return
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.")
+      return
+    }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.")
+      return
+    }
+    if (password !== passwordConfirmation) {
+      setError("Passwords do not match.")
+      return
+    }
+    setIsLoading(true)
+    try {
+      const { data, error: supaError } = await signUpWithEmail(email, password)
+      if (supaError) {
+        setError(supaError.message)
+        setIsLoading(false)
+        return
+      }
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Dashboard", params: { screen: "Home" } }],
+      })
+    } catch {
+      setError("An unexpected error occurred. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
-    <Screen
-      preset="auto"
-      contentContainerStyle={themed($screenContentContainer)}
-      safeAreaEdges={["top", "bottom"]}
-    >
-      <Text
-        testID="login-heading"
-        text="Register an account"
-        preset="heading"
-        style={themed($logIn)}
-      />
-      <Text tx="loginScreen:enterDetails" preset="subheading" style={themed($enterDetails)} />
-      {attemptsCount > 2 && (
-        <Text tx="loginScreen:hint" size="sm" weight="light" style={themed($hint)} />
-      )}
-
+    <Screen preset="scroll" contentContainerStyle={themed($screenContentContainer)}>
+      <AutoImage source={appLogo} style={themed($logo)} resizeMode="contain" accessibilityLabel="EcoLife logo" />
+      <Text preset="heading" style={themed($logIn)} text="Register" accessibilityRole="header" />
+      <Text preset="subheading" style={themed($enterDetails)} text="Create your account" />
       <TextField
-        value={authEmail}
-        onChangeText={setAuthEmail}
-        containerStyle={themed($textField)}
+        value={email}
+        onChangeText={setEmail}
+        label="Email"
         autoCapitalize="none"
-        autoComplete="email"
-        autoCorrect={false}
         keyboardType="email-address"
-        labelTx="loginScreen:emailFieldLabel"
-        placeholderTx="loginScreen:emailFieldPlaceholder"
-        helper={error}
-        status={error ? "error" : undefined}
-        onSubmitEditing={() => authPasswordInput.current?.focus()}
-      />
-
-      <TextField
-        ref={authPasswordInput}
-        value={authPassword}
-        onChangeText={setAuthPassword}
-        containerStyle={themed($textField)}
-        autoCapitalize="none"
-        autoComplete="password"
+        returnKeyType="next"
+        onSubmitEditing={() => passwordInput.current?.focus()}
+        blurOnSubmit={false}
+        style={themed($textField)}
         autoCorrect={false}
-        secureTextEntry={isAuthPasswordHidden}
-        labelTx="loginScreen:passwordFieldLabel"
-        placeholderTx="loginScreen:passwordFieldPlaceholder"
+        autoComplete="email"
+        textContentType="emailAddress"
+        accessibilityLabel="Email input"
+      />
+      <TextField
+        ref={passwordInput}
+        value={password}
+        onChangeText={setPassword}
+        label="Password"
+        secureTextEntry={isPasswordHidden}
+        returnKeyType="next"
+        onSubmitEditing={() => passwordConfirmInput.current?.focus()}
+        style={themed($textField)}
+        autoCapitalize="none"
+        autoCorrect={false}
+        autoComplete="password"
+        textContentType="newPassword"
+        accessibilityLabel="Password input"
+      />
+      <TextField
+        ref={passwordConfirmInput}
+        value={passwordConfirmation}
+        onChangeText={setPasswordConfirmation}
+        label="Confirm Password"
+        secureTextEntry={isConfirmPasswordHidden}
+        returnKeyType="done"
         onSubmitEditing={register}
-        RightAccessory={PasswordRightAccessory}
+        style={themed($textField)}
+        autoCapitalize="none"
+        autoCorrect={false}
+        autoComplete="password"
+        textContentType="newPassword"
+        accessibilityLabel="Confirm password input"
       />
-
+      {error ? (
+        <Text text={error} style={{ color: colors.error, marginBottom: 8, textAlign: "center" }} accessibilityLiveRegion="polite" />
+      ) : null}
       <Button
-        testID="login-button"
-        text="Tap to register !"
-        style={themed($tapButton)}
-        preset="reversed"
+        text={isLoading ? "Registering..." : "Register"}
         onPress={register}
+        style={themed($tapButton)}
+        disabled={isLoading}
+        accessibilityLabel="Register button"
       />
+      <View style={themed($footer)}>
+        <Text text="Already have an account?" />
+        <Text text="Log In" onPress={goLogin} style={themed($loginLink)} accessibilityRole="link" />
+      </View>
     </Screen>
   )
 })
 
-const $screenContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+// --- STYLES (Copied from LoginScreen.tsx for consistency) ---
+
+const $screenContentContainer: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+  flex: 1,
+  justifyContent: "center",
   paddingVertical: spacing.xxl,
   paddingHorizontal: spacing.lg,
+  backgroundColor: colors.background,
+})
+
+const $logo: ThemedStyle<ImageStyle> = ({ spacing }) => ({
+  height: 100,
+  width: "60%",
+  alignSelf: "center",
+  marginBottom: spacing.xxl,
 })
 
 const $logIn: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.sm,
+  textAlign: "center",
 })
 
 const $enterDetails: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  marginBottom: spacing.lg,
-})
-
-const $hint: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  color: colors.tint,
-  marginBottom: spacing.md,
+  marginBottom: spacing.xxl,
+  textAlign: "center",
 })
 
 const $textField: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginBottom: spacing.lg,
+  marginBottom: spacing.lg, // Added slightly more margin between fields
 })
 
 const $tapButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginTop: spacing.xs,
+  marginTop: spacing.lg,
+})
+
+const $footer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: spacing.xl,
+})
+
+const $loginLink: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.text,
+  fontWeight: "bold",
+  marginLeft: spacing.xs,
 })
