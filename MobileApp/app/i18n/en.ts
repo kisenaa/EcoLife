@@ -10,6 +10,8 @@ const en = {
   welcomeScreen: {
     postscript: "psst  — This probably isn't what your app is going to look like. (Unless your app is a list of cool apps!)",
     readyForLaunch: "Your app, EcoLife, is ready for launch!",
+    postscript: "psst  — This probably isn't what your app is going to look like. (Unless your app is a list of cool apps!)",
+    readyForLaunch: "Your app, EcoLife, is ready for launch!",
     exciting: "(ohh, this is exciting!)",
     letsGo: "Let's go!",
   },

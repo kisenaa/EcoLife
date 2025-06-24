@@ -1,5 +1,5 @@
-import React from "react"
-import { TouchableOpacity, View } from "react-native"
+import React, { useRef, useEffect } from "react"
+import { Animated, TouchableOpacity, View } from "react-native"
 import { Text, Icon } from "../../components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { WaveProgress } from "./WaveProgress"
@@ -14,6 +14,17 @@ interface HabitHeroProps {
 export const HabitHero: React.FC<HabitHeroProps> = ({ habits, onNavigate }) => {
   const { themed, theme } = useAppTheme({ useForest: true })
   const progress = habits.total > 0 ? habits.completed / habits.total : 0
+
+  // Animated progress for smooth wave animation
+  const animatedProgress = useRef(new Animated.Value(progress)).current
+
+  useEffect(() => {
+    Animated.timing(animatedProgress, {
+      toValue: progress,
+      duration: 800,
+      useNativeDriver: false,
+    }).start()
+  }, [progress])
 
   return (
     <TouchableOpacity style={themed($heroWrapper)} onPress={onNavigate} activeOpacity={0.8}>

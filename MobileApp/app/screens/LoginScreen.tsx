@@ -64,8 +64,6 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         onChangeText={setAuthEmail}
         label="Email"
         autoCapitalize="none"
-        autoComplete="email"
-        autoCorrect={false}
         keyboardType="email-address"
         returnKeyType="next"
         onSubmitEditing={() => authPasswordInput.current?.focus()}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View, FlatList, ActivityIndicator } from "react-native"
+import { View, FlatList, ActivityIndicator, ScrollView } from "react-native"
 import { Screen, Text, Button } from "../../components"
 import { DashboardTabScreenProps } from "../../navigators/DashboardNavigator"
 import { useAppTheme } from "@/utils/useAppTheme"
@@ -10,18 +10,42 @@ import { HabitHero } from "@/components/home/HabitHero"
 import { GardenPlantCard } from "@/components/home/GardenPlantCard"
 import { DiscoveryCard } from "@/components/home/DiscoveryCard"
 import { QuizCard } from "@/components/home/QuizCard"
+import { getCurrentUser } from "@/services/supabase/supabaseAuth"
 import type { ThemedStyle } from "@/theme"
 import type { ViewStyle, TextStyle } from "react-native"
 
 export const Home: React.FC<DashboardTabScreenProps<"Home">> = function Home(_props) {
   const { navigation } = _props
   const { themed, theme } = useAppTheme({ useForest: true })
-  const allHabitsDone = habitsData.completed === habitsData.total
+  const [habitStats, setHabitStats] = useState({ completed: 0, total: 0 })
+
+  // Fetch and update habit stats
+  const fetchAndSetHabitStats = () => {
+    getCurrentUser().then((userRes) => {
+      const userId = userRes?.data?.user?.id
+      if (!userId) return
+      fetchHabits(userId).then((res) => {
+        const habits = res.data || []
+        setHabitStats({
+          completed: habits.filter((h: any) => h.completed).length,
+          total: habits.length,
+        })
+      })
+    })
+  }
+
+  useEffect(() => {
+    fetchAndSetHabitStats()
+    const unsubscribe = navigation.addListener("focus", fetchAndSetHabitStats)
+    return unsubscribe
+  }, [navigation])
+
+  const allHabitsDone = habitStats.completed === habitStats.total && habitStats.total > 0
 
   return (
     <Screen preset="scroll" contentContainerStyle={themed($container)}>
       <HeaderGreeting user={userData} />
-      <HabitHero habits={habitsData} onNavigate={() => navigation.navigate("Habits")} />
+      <HabitHero habits={habitStats} onNavigate={() => navigation.navigate("Habits")} />
       <View style={themed($cardSection)}>
         <View style={themed($cardHeader)}>
           <Text style={themed($widgetTitle)} text="Your Garden" />
@@ -32,7 +56,12 @@ export const Home: React.FC<DashboardTabScreenProps<"Home">> = function Home(_pr
             onPress={() => navigation.navigate("Plants")}
           />
         </View>
-        <View style={{ flexDirection: "row" }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={themed($plantsScrollContainer)}
+          style={themed($plantsScrollView)}
+        >
           {plantData.map((item) => (
             <GardenPlantCard
               key={item.id}
@@ -40,7 +69,7 @@ export const Home: React.FC<DashboardTabScreenProps<"Home">> = function Home(_pr
               onNavigate={() => navigation.navigate("PlantDetail", { plantId: item.id })}
             />
           ))}
-        </View>
+        </ScrollView>
       </View>
       <View style={themed($cardSection)}>
         <View style={themed($cardHeader)}>
@@ -59,7 +88,7 @@ export const Home: React.FC<DashboardTabScreenProps<"Home">> = function Home(_pr
 }
 
 const $container: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
-  marginTop: spacing.xxl,
+  marginTop: spacing.xl,
   paddingHorizontal: spacing.lg,
   paddingBottom: spacing.lg,
   backgroundColor: colors.background,
@@ -97,4 +126,12 @@ const $viewAllButton: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
 const $viewAllButtonText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.palette.primary600,
   fontWeight: "bold",
+})
+const $plantsScrollView: ThemedStyle<ViewStyle> = () => ({
+  // Optional: Add any scroll view specific styles
+})
+
+const $plantsScrollContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  paddingHorizontal: spacing.xs, // Add some padding for better spacing
+  gap: spacing.sm, // Add gap between cards if your React Native version supports it
 })
