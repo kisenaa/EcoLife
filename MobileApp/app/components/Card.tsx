@@ -1,13 +1,5 @@
 import { ComponentType, Fragment, ReactElement } from "react"
-import {
-  StyleProp,
-  TextStyle,
-  TouchableOpacity,
-  TouchableOpacityProps,
-  View,
-  ViewProps,
-  ViewStyle,
-} from "react-native"
+import { StyleProp, TextStyle, TouchableOpacity, TouchableOpacityProps, View, ViewProps, ViewStyle } from "react-native"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme"
 import { $styles } from "../theme"
 import { Text, TextProps } from "./Text"
@@ -163,15 +155,10 @@ export function Card(props: CardProps) {
   const isContentPresent = !!(ContentComponent || content || contentTx)
   const isFooterPresent = !!(FooterComponent || footer || footerTx)
 
-  const Wrapper = (isPressable ? TouchableOpacity : View) as ComponentType<
-    TouchableOpacityProps | ViewProps
-  >
+  const Wrapper = (isPressable ? TouchableOpacity : View) as ComponentType<TouchableOpacityProps | ViewProps>
   const HeaderContentWrapper = verticalAlignment === "force-footer-bottom" ? View : Fragment
 
-  const $containerStyle: StyleProp<ViewStyle> = [
-    themed($containerPresets[preset]),
-    $containerStyleOverride,
-  ]
+  const $containerStyle: StyleProp<ViewStyle> = [themed($containerPresets[preset]), $containerStyleOverride]
   const $headingStyle = [
     themed($headingPresets[preset]),
     (isFooterPresent || isContentPresent) && { marginBottom: spacing.xxxs },
@@ -199,12 +186,7 @@ export function Card(props: CardProps) {
   ]
 
   return (
-    <Wrapper
-      style={$containerStyle}
-      activeOpacity={0.8}
-      accessibilityRole={isPressable ? "button" : undefined}
-      {...WrapperProps}
-    >
+    <Wrapper style={$containerStyle} activeOpacity={0.8} accessibilityRole={isPressable ? "button" : undefined} {...WrapperProps}>
       {LeftComponent}
 
       <View style={$alignmentWrapperStyle}>

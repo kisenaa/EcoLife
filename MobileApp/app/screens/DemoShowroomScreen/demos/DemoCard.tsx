@@ -8,10 +8,7 @@ export const DemoCard: Demo = {
   name: "Card",
   description: "demoCard:description",
   data: ({ theme }) => [
-    <DemoUseCase
-      name="demoCard:useCase.presets.name"
-      description="demoCard:useCase.presets.description"
-    >
+    <DemoUseCase name="demoCard:useCase.presets.name" description="demoCard:useCase.presets.description">
       <Card
         headingTx="demoCard:useCase.presets.default.heading"
         contentTx="demoCard:useCase.presets.default.content"
@@ -26,10 +23,7 @@ export const DemoCard: Demo = {
       />
     </DemoUseCase>,
 
-    <DemoUseCase
-      name="demoCard:useCase.verticalAlignment.name"
-      description="demoCard:useCase.verticalAlignment.description"
-    >
+    <DemoUseCase name="demoCard:useCase.verticalAlignment.name" description="demoCard:useCase.verticalAlignment.description">
       <Card
         headingTx="demoCard:useCase.verticalAlignment.top.heading"
         contentTx="demoCard:useCase.verticalAlignment.top.content"
@@ -64,10 +58,7 @@ export const DemoCard: Demo = {
       />
     </DemoUseCase>,
 
-    <DemoUseCase
-      name="demoCard:useCase.passingContent.name"
-      description="demoCard:useCase.passingContent.description"
-    >
+    <DemoUseCase name="demoCard:useCase.passingContent.name" description="demoCard:useCase.passingContent.description">
       <Card
         headingTx="demoCard:useCase.passingContent.heading"
         contentTx="demoCard:useCase.passingContent.content"
@@ -85,10 +76,7 @@ export const DemoCard: Demo = {
       />
     </DemoUseCase>,
 
-    <DemoUseCase
-      name="demoCard:useCase.customComponent.name"
-      description="demoCard:useCase.customComponent.description"
-    >
+    <DemoUseCase name="demoCard:useCase.customComponent.name" description="demoCard:useCase.customComponent.description">
       <Card
         HeadingComponent={
           <Button
@@ -145,10 +133,7 @@ export const DemoCard: Demo = {
       />
     </DemoUseCase>,
 
-    <DemoUseCase
-      name="demoCard:useCase.style.name"
-      description="demoCard:useCase.style.description"
-    >
+    <DemoUseCase name="demoCard:useCase.style.name" description="demoCard:useCase.style.description">
       <Card
         headingTx="demoCard:useCase.style.heading"
         headingStyle={{ color: theme.colors.error }}

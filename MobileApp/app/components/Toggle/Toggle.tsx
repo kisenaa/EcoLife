@@ -154,11 +154,7 @@ export function Toggle<T>(props: ToggleProps<T>) {
 
   const $containerStyles = [$containerStyleOverride]
   const $inputWrapperStyles = [$styles.row, $inputWrapper, $inputWrapperStyleOverride]
-  const $helperStyles = themed([
-    $helper,
-    status === "error" && { color: colors.error },
-    HelperTextProps?.style,
-  ])
+  const $helperStyles = themed([$helper, status === "error" && { color: colors.error }, HelperTextProps?.style])
 
   /**
    * @param {GestureResponderEvent} e - The event object.
@@ -212,15 +208,7 @@ export function Toggle<T>(props: ToggleProps<T>) {
  * @returns {JSX.Element} The rendered `FieldLabel` component.
  */
 function FieldLabel<T>(props: ToggleProps<T>) {
-  const {
-    status,
-    label,
-    labelTx,
-    labelTxOptions,
-    LabelTextProps,
-    labelPosition,
-    labelStyle: $labelStyleOverride,
-  } = props
+  const { status, label, labelTx, labelTxOptions, LabelTextProps, labelPosition, labelStyle: $labelStyleOverride } = props
 
   const {
     theme: { colors },
@@ -238,16 +226,7 @@ function FieldLabel<T>(props: ToggleProps<T>) {
     LabelTextProps?.style,
   ])
 
-  return (
-    <Text
-      preset="formLabel"
-      text={label}
-      tx={labelTx}
-      txOptions={labelTxOptions}
-      {...LabelTextProps}
-      style={$labelStyle}
-    />
-  )
+  return <Text preset="formLabel" text={label} tx={labelTx} txOptions={labelTxOptions} {...LabelTextProps} style={$labelStyle} />
 }
 
 const $inputWrapper: ViewStyle = {

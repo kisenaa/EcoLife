@@ -72,24 +72,11 @@ function RadioInput(props: RadioInputProps) {
   ].filter(Boolean)[0]
 
   return (
-    <View
-      style={[
-        $inputOuter,
-        { backgroundColor: offBackgroundColor, borderColor: outerBorderColor },
-        $outerStyleOverride,
-      ]}
-    >
+    <View style={[$inputOuter, { backgroundColor: offBackgroundColor, borderColor: outerBorderColor }, $outerStyleOverride]}>
       <Animated.View
-        style={[
-          $styles.toggleInner,
-          { backgroundColor: onBackgroundColor },
-          $innerStyleOverride,
-          { opacity: opacity.current },
-        ]}
+        style={[$styles.toggleInner, { backgroundColor: onBackgroundColor }, $innerStyleOverride, { opacity: opacity.current }]}
       >
-        <View
-          style={[$radioDetail, { backgroundColor: dotBackgroundColor }, $detailStyleOverride]}
-        />
+        <View style={[$radioDetail, { backgroundColor: dotBackgroundColor }, $detailStyleOverride]} />
       </Animated.View>
     </View>
   )

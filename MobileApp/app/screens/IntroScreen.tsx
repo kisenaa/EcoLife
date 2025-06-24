@@ -4,12 +4,11 @@ import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { Button, Text, Screen } from "@/components"
 import { isRTL } from "@/i18n"
 import { AppStackScreenProps } from "../navigators"
-import { $styles, type ThemedStyle } from "@/theme"
+import { $styles, spacing, type ThemedStyle } from "@/theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { useAppTheme } from "@/utils/useAppTheme"
 
 const welcomeLogo = require("../../assets/images/logo.png")
-const welcomeFace = require("../../assets/images/welcome-face.png")
 
 interface IntroScreenProps extends AppStackScreenProps<"Intro"> {}
 
@@ -28,29 +27,39 @@ export const IntroScreen: FC<IntroScreenProps> = observer(function IntroScreen(_
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
   return (
-    <Screen preset="fixed" contentContainerStyle={$styles.flex1}>
-      <View style={themed($topContainer)}>
-        <Image style={themed($welcomeLogo)} source={welcomeLogo} resizeMode="contain" />
+    <Screen preset="fixed" contentContainerStyle={[$styles.flex1, { justifyContent: "center" }]}>
+      {/* Background arch */}
+      <View
+        style={{
+          position: "absolute",
+          left: "-45%",
+          right: "-45%",
+          top: "55%",
+          height: "65%",
+          backgroundColor: "#C8E6C9", // light green
+          borderTopLeftRadius: 400, // wider arch
+          borderTopRightRadius: 400, // wider arch
+          zIndex: 0,
+        }}
+      />
+      {/* Content */}
+      <View style={themed([$topContainer, { alignItems: "center", justifyContent: "center", flex: 1, zIndex: 1 }])}>
+        <Image style={themed([$welcomeLogo, { marginTop: 0 }])} source={welcomeLogo} resizeMode="contain" />
         <Text
-          testID="welcome-heading"
-          style={themed($welcomeHeading)}
-          tx="welcomeScreen:readyForLaunch"
-          preset="heading"
-        />
-        <Text tx="welcomeScreen:exciting" preset="subheading" />
-        <Image
-          style={$welcomeFace}
-          source={welcomeFace}
-          resizeMode="contain"
-          tintColor={theme.colors.palette.neutral900}
+          text="Level up your home life with EcoLife"
+          preset="subheading"
+          style={themed([$welcomeHeading, { alignItems: "center" }])}
         />
       </View>
-
-      <View style={themed([$bottomContainer, $bottomContainerInsets])}>
-        <Text tx="welcomeScreen:postscript" size="md" />
-
-        <Button testID="next-screen-button" preset="reversed" text="Login" onPress={goLogin} />
-        <Button testID="intro-login" preset="reversed" text="Register" onPress={goRegister} />
+      <View style={themed([$bottomContainer, $bottomContainerInsets, { alignItems: "center", zIndex: 1 }])}>
+        <Button testID="login-button" text="Login" preset="reversed" onPress={goLogin} style={{ width: "100%" }} />
+        <Button
+          testID="register-button"
+          text="Register"
+          preset="reversed"
+          onPress={goRegister}
+          style={{ width: "100%", marginTop: spacing.xl }}
+        />
       </View>
     </Screen>
   )
@@ -68,28 +77,20 @@ const $bottomContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   flexShrink: 1,
   flexGrow: 0,
   flexBasis: "43%",
-  backgroundColor: colors.palette.neutral100,
+  backgroundColor: "transparent", // changed from light green to transparent
   borderTopLeftRadius: 16,
   borderTopRightRadius: 16,
   paddingHorizontal: spacing.lg,
-  justifyContent: "space-around",
+  justifyContent: "center",
 })
 
 const $welcomeLogo: ThemedStyle<ImageStyle> = ({ spacing }) => ({
   height: 88,
   width: "100%",
-  marginBottom: spacing.xxl,
+  marginBottom: spacing.xxs,
 })
 
-const $welcomeFace: ImageStyle = {
-  height: 169,
-  width: 269,
-  position: "absolute",
-  bottom: -47,
-  right: -80,
-  transform: [{ scaleX: isRTL ? -1 : 1 }],
-}
-
 const $welcomeHeading: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  marginTop: spacing.md,
   marginBottom: spacing.md,
 })
