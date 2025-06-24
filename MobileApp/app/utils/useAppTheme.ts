@@ -26,8 +26,7 @@ export const ThemeContext = createContext<ThemeContextType>({
   },
 })
 
-const themeContextToTheme = (themeContext: ThemeContexts): Theme =>
-  themeContext === "dark" ? darkTheme : lightTheme
+const themeContextToTheme = (themeContext: ThemeContexts): Theme => (themeContext === "dark" ? darkTheme : lightTheme)
 
 const setImperativeTheming = (theme: Theme) => {
   SystemUI.setBackgroundColorAsync(theme.colors.background)
@@ -77,7 +76,7 @@ interface UseAppThemeValue {
  * @returns {UseAppThemeReturn} An object containing various theming values and utilities.
  * @throws {Error} If used outside of a ThemeProvider.
  */
-export const useAppTheme = (options?: { useForest?: boolean }) : UseAppThemeValue => {
+export const useAppTheme = (options?: { useForest?: boolean }): UseAppThemeValue => {
   const navTheme = useNavTheme()
   const context = useContext(ThemeContext)
   if (!context) {

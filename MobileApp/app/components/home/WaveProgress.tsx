@@ -15,14 +15,7 @@ interface WaveProgressProps {
   icon?: React.ReactNode
 }
 
-export const WaveProgress: React.FC<WaveProgressProps> = ({
-  size = 180,
-  progress,
-  waveColor,
-  bgColor,
-  borderColor,
-  icon,
-}) => {
+export const WaveProgress: React.FC<WaveProgressProps> = ({ size = 180, progress, waveColor, bgColor, borderColor, icon }) => {
   const { theme } = useAppTheme({ useForest: true })
   const radius = size / 2
   const waveHeight = 10
@@ -36,11 +29,7 @@ export const WaveProgress: React.FC<WaveProgressProps> = ({
   useEffect(() => {
     animatedProgress.value = withTiming(progress, { duration: 900 })
     // Animate the phase for the wave motion
-    phase.value = withRepeat(
-      withTiming(2 * Math.PI, { duration: 2000, easing: Easing.linear }),
-      -1,
-      false
-    )
+    phase.value = withRepeat(withTiming(2 * Math.PI, { duration: 2000, easing: Easing.linear }), -1, false)
   }, [progress])
 
   // Animated wave path
@@ -57,7 +46,7 @@ export const WaveProgress: React.FC<WaveProgressProps> = ({
   })
 
   return (
-    <View style={[styles.container, { width: size, height: size }]}> 
+    <View style={[styles.container, { width: size, height: size }]}>
       <Svg width={size} height={size}>
         {/* Outer circle */}
         <Circle
@@ -70,10 +59,7 @@ export const WaveProgress: React.FC<WaveProgressProps> = ({
         />
         {/* Animated wave */}
         <G clipPath={`url(#clip)`}>
-          <AnimatedPath
-            animatedProps={animatedProps}
-            fill={waveColor || theme.colors.palette.accent100}
-          />
+          <AnimatedPath animatedProps={animatedProps} fill={waveColor || theme.colors.palette.accent100} />
         </G>
         <Defs>
           <ClipPath id="clip">
@@ -93,18 +79,18 @@ export const WaveProgress: React.FC<WaveProgressProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
   },
   iconContainer: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    width: "100%",
+    alignItems: "center",
     height: "100%",
     justifyContent: "center",
-    alignItems: "center",
+    left: 0,
+    position: "absolute",
+    top: 0,
+    width: "100%",
     zIndex: 2,
   },
 })

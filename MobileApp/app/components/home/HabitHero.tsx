@@ -13,7 +13,7 @@ interface HabitHeroProps {
 
 export const HabitHero: React.FC<HabitHeroProps> = ({ habits, onNavigate }) => {
   const { themed, theme } = useAppTheme({ useForest: true })
-  const progress = habits.total > 0 ? (habits.completed / habits.total) : 0
+  const progress = habits.total > 0 ? habits.completed / habits.total : 0
 
   return (
     <TouchableOpacity style={themed($heroWrapper)} onPress={onNavigate} activeOpacity={0.8}>
@@ -49,5 +49,5 @@ const $heroCircle: ThemedStyle<ViewStyle> = ({}) => ({
 const $heroText: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
   marginTop: spacing.md,
   color: colors.text,
-  fontWeight: '600'
+  fontWeight: "600",
 })

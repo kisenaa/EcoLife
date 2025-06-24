@@ -63,9 +63,7 @@ export function DashboardNavigator() {
         component={Home}
         options={{
           tabBarLabel: "Home",
-          tabBarIcon: ({ focused }) => (
-            <Icon icon="home" color={focused ? colors.tint : colors.tintInactive} size={35} />
-          ),
+          tabBarIcon: ({ focused }) => <Icon icon="home" color={focused ? colors.tint : colors.tintInactive} size={35} />,
         }}
       />
       <Tab.Screen
@@ -73,9 +71,7 @@ export function DashboardNavigator() {
         component={History}
         options={{
           tabBarLabel: "History",
-          tabBarIcon: ({ focused }) => (
-            <Icon icon="history" color={focused ? colors.tint : colors.tintInactive} size={32} />
-          ),
+          tabBarIcon: ({ focused }) => <Icon icon="history" color={focused ? colors.tint : colors.tintInactive} size={32} />,
         }}
       />
       <Tab.Screen
@@ -83,9 +79,7 @@ export function DashboardNavigator() {
         component={DemoShowroomScreen}
         options={{
           tabBarLabel: translate("DashboardNavigator:componentsTab"),
-          tabBarIcon: ({ focused }) => (
-            <Icon icon="components" color={focused ? colors.tint : colors.tintInactive} size={30} />
-          ),
+          tabBarIcon: ({ focused }) => <Icon icon="components" color={focused ? colors.tint : colors.tintInactive} size={30} />,
         }}
       />
       <Tab.Screen
@@ -93,9 +87,7 @@ export function DashboardNavigator() {
         component={DemoCommunityScreen}
         options={{
           tabBarLabel: translate("DashboardNavigator:communityTab"),
-          tabBarIcon: ({ focused }) => (
-            <Icon icon="community" color={focused ? colors.tint : colors.tintInactive} size={30} />
-          ),
+          tabBarIcon: ({ focused }) => <Icon icon="community" color={focused ? colors.tint : colors.tintInactive} size={30} />,
         }}
       />
       {/*
@@ -116,9 +108,7 @@ export function DashboardNavigator() {
         component={DemoDebugScreen}
         options={{
           tabBarLabel: "Settings",
-          tabBarIcon: ({ focused }) => (
-            <Icon icon="settings" color={focused ? colors.tint : colors.tintInactive} size={30} />
-          ),
+          tabBarIcon: ({ focused }) => <Icon icon="settings" color={focused ? colors.tint : colors.tintInactive} size={30} />,
         }}
       />
     </Tab.Navigator>

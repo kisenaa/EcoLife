@@ -14,7 +14,7 @@ export const HeaderGreeting: React.FC<HeaderGreetingProps> = ({ user }) => {
   return (
     <View style={themed($headerContainer)}>
       <Text preset="heading" text={`Good morning, ${user.name}!`} />
-      <TouchableOpacity onPress={() => console.log("Navigate to Notifications")}> 
+      <TouchableOpacity onPress={() => console.log("Navigate to Notifications")}>
         <Icon icon="bell" size={24} color={theme.colors.textDim} />
       </TouchableOpacity>
     </View>

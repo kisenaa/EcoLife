@@ -1,12 +1,5 @@
 import { ReactElement } from "react"
-import {
-  StyleProp,
-  TextStyle,
-  TouchableOpacity,
-  TouchableOpacityProps,
-  View,
-  ViewStyle,
-} from "react-native"
+import { StyleProp, TextStyle, TouchableOpacity, TouchableOpacityProps, View, ViewStyle } from "react-native"
 import { isRTL, translate } from "@/i18n"
 import { $styles } from "../theme"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
@@ -204,12 +197,7 @@ export function Header(props: HeaderProps) {
               $titleContainerStyleOverride,
             ]}
           >
-            <Text
-              weight="medium"
-              size="md"
-              text={titleContent}
-              style={[$title, $titleStyleOverride]}
-            />
+            <Text weight="medium" size="md" text={titleContent} style={[$title, $titleStyleOverride]} />
           </View>
         )}
 

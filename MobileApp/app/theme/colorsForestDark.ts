@@ -31,7 +31,7 @@ const palette = {
 
   angry100: "#FFCDD2",
   angry500: "#D32F2F",
-} as const;
+} as const
 
 export const colors = {
   palette,
@@ -45,4 +45,4 @@ export const colors = {
   separator: palette.neutral300,
   error: palette.angry500,
   errorBackground: palette.angry100,
-} as const;
+} as const

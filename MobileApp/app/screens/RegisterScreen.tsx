@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite"
-import { FC, useRef, useState } from "react"
-import { View, TextInput, ImageStyle, TextStyle, ViewStyle, ScrollView } from "react-native"
-import { Button, Screen, Text, TextField, AutoImage } from "../components"
+import { ComponentType, FC, useMemo, useRef, useState } from "react"
+import { View, TextInput, ImageStyle, TextStyle, ViewStyle, ScrollView, Alert } from "react-native"
+import { Button, Screen, Text, TextField, AutoImage, PressableIcon, TextFieldAccessoryProps } from "../components"
 import { AppStackScreenProps } from "../navigators"
 import type { ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
@@ -13,7 +13,10 @@ interface RegisterScreenProps extends AppStackScreenProps<"Register"> {}
 
 export const RegisterScreen: FC<RegisterScreenProps> = observer(function RegisterScreen(_props) {
   const { navigation } = _props
-  const { themed, theme: { colors } } = useAppTheme()
+  const {
+    themed,
+    theme: { colors },
+  } = useAppTheme()
 
   const emailInput = useRef<TextInput>(null)
   const passwordInput = useRef<TextInput>(null)
@@ -58,16 +61,46 @@ export const RegisterScreen: FC<RegisterScreenProps> = observer(function Registe
         setIsLoading(false)
         return
       }
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Dashboard", params: { screen: "Home" } }],
-      })
+      Alert.alert("Registration Successful", "Please check your email to verify your account.")
+      navigation.navigate("Login")
     } catch {
       setError("An unexpected error occurred. Please try again.")
     } finally {
       setIsLoading(false)
     }
   }
+
+  const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
+    () =>
+      function PasswordRightAccessory(props: TextFieldAccessoryProps) {
+        return (
+          <PressableIcon
+            icon={isPasswordHidden ? "view" : "hidden"}
+            color={colors.palette.neutral800}
+            containerStyle={props.style}
+            size={20}
+            onPress={() => setIsPasswordHidden(!isPasswordHidden)}
+          />
+        )
+      },
+    [isPasswordHidden, colors.palette.neutral800],
+  )
+
+  const ConfirmPasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
+    () =>
+      function ConfirmPasswordRightAccessory(props: TextFieldAccessoryProps) {
+        return (
+          <PressableIcon
+            icon={isConfirmPasswordHidden ? "view" : "hidden"}
+            color={colors.palette.neutral800}
+            containerStyle={props.style}
+            size={20}
+            onPress={() => setIsConfirmPasswordHidden(!isConfirmPasswordHidden)}
+          />
+        )
+      },
+    [isConfirmPasswordHidden, colors.palette.neutral800],
+  )
 
   return (
     <Screen preset="scroll" contentContainerStyle={themed($screenContentContainer)}>
@@ -80,14 +113,16 @@ export const RegisterScreen: FC<RegisterScreenProps> = observer(function Registe
         label="Email"
         autoCapitalize="none"
         keyboardType="email-address"
+        labelTx="loginScreen:emailFieldLabel"
+        placeholderTx="loginScreen:emailFieldPlaceholder"
         returnKeyType="next"
         onSubmitEditing={() => passwordInput.current?.focus()}
         blurOnSubmit={false}
-        style={themed($textField)}
         autoCorrect={false}
         autoComplete="email"
         textContentType="emailAddress"
         accessibilityLabel="Email input"
+        containerStyle={themed($textField)}
       />
       <TextField
         ref={passwordInput}
@@ -97,30 +132,39 @@ export const RegisterScreen: FC<RegisterScreenProps> = observer(function Registe
         secureTextEntry={isPasswordHidden}
         returnKeyType="next"
         onSubmitEditing={() => passwordConfirmInput.current?.focus()}
-        style={themed($textField)}
         autoCapitalize="none"
         autoCorrect={false}
         autoComplete="password"
         textContentType="newPassword"
         accessibilityLabel="Password input"
+        labelTx="loginScreen:passwordFieldLabel"
+        placeholderTx="loginScreen:passwordFieldPlaceholder"
+        containerStyle={themed($textField)}
+        RightAccessory={PasswordRightAccessory}
       />
       <TextField
         ref={passwordConfirmInput}
         value={passwordConfirmation}
         onChangeText={setPasswordConfirmation}
-        label="Confirm Password"
         secureTextEntry={isConfirmPasswordHidden}
         returnKeyType="done"
         onSubmitEditing={register}
-        style={themed($textField)}
         autoCapitalize="none"
         autoCorrect={false}
         autoComplete="password"
         textContentType="newPassword"
         accessibilityLabel="Confirm password input"
+        containerStyle={themed($textField)}
+        label="Confirm Password"
+        placeholder="Re-enter your password"
+        RightAccessory={ConfirmPasswordRightAccessory}
       />
       {error ? (
-        <Text text={error} style={{ color: colors.error, marginBottom: 8, textAlign: "center" }} accessibilityLiveRegion="polite" />
+        <Text
+          text={error}
+          style={{ color: colors.error, marginBottom: 8, textAlign: "center" }}
+          accessibilityLiveRegion="polite"
+        />
       ) : null}
       <Button
         text={isLoading ? "Registering..." : "Register"}
@@ -128,6 +172,7 @@ export const RegisterScreen: FC<RegisterScreenProps> = observer(function Registe
         style={themed($tapButton)}
         disabled={isLoading}
         accessibilityLabel="Register button"
+        preset="reversed"
       />
       <View style={themed($footer)}>
         <Text text="Already have an account?" />

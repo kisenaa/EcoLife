@@ -1,14 +1,6 @@
 import { FC, useCallback, useMemo } from "react"
 import * as Application from "expo-application"
-import {
-  LayoutAnimation,
-  Linking,
-  Platform,
-  TextStyle,
-  useColorScheme,
-  View,
-  ViewStyle,
-} from "react-native"
+import { LayoutAnimation, Linking, Platform, TextStyle, useColorScheme, View, ViewStyle } from "react-native"
 import { Button, ListItem, Screen, Text } from "../../components"
 import { DashboardTabScreenProps } from "../../navigators/DashboardNavigator"
 import type { ThemedStyle } from "@/theme"
@@ -27,9 +19,7 @@ function openLinkInBrowser(url: string) {
 
 const usingHermes = typeof HermesInternal === "object" && HermesInternal !== null
 
-export const DemoDebugScreen: FC<DashboardTabScreenProps<"DemoDebug">> = function DemoDebugScreen(
-  _props,
-) {
+export const DemoDebugScreen: FC<DashboardTabScreenProps<"DemoDebug">> = function DemoDebugScreen(_props) {
   const { setThemeContextOverride, themeContext, themed } = useAppTheme()
   const {
     authenticationStore: { logout },
@@ -70,11 +60,7 @@ export const DemoDebugScreen: FC<DashboardTabScreenProps<"DemoDebug">> = functio
   }, [setThemeContextOverride])
 
   return (
-    <Screen
-      preset="scroll"
-      safeAreaEdges={["top"]}
-      contentContainerStyle={[$styles.container, themed($container)]}
-    >
+    <Screen preset="scroll" safeAreaEdges={["top"]} contentContainerStyle={[$styles.container, themed($container)]}>
       <Text
         style={themed($reportBugsLink)}
         tx="demoDebugScreen:reportBugs"
@@ -87,11 +73,7 @@ export const DemoDebugScreen: FC<DashboardTabScreenProps<"DemoDebug">> = functio
       <Button onPress={resetTheme} text={`Reset`} />
 
       <View style={themed($itemsContainer)}>
-        <Button
-          onPress={toggleTheme}
-          text={`Toggle Theme: ${themeContext}`}
-          style={themed($toggleThemeButton)}
-        />
+        <Button onPress={toggleTheme} text={`Toggle Theme: ${themeContext}`} style={themed($toggleThemeButton)} />
       </View>
       <View style={themed($itemsContainer)}>
         <ListItem

@@ -27,30 +27,39 @@ export const IntroScreen: FC<IntroScreenProps> = observer(function IntroScreen(_
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
   return (
-    <Screen preset="fixed" contentContainerStyle={[$styles.flex1, { justifyContent: "center" }]}> 
+    <Screen preset="fixed" contentContainerStyle={[$styles.flex1, { justifyContent: "center" }]}>
       {/* Background arch */}
-      <View style={{
-        position: "absolute",
-        left: "-45%",
-        right: "-45%",
-        top: "55%",
-        height: "65%",
-        backgroundColor: "#C8E6C9", // light green
-        borderTopLeftRadius: 400, // wider arch
-        borderTopRightRadius: 400, // wider arch
-        zIndex: 0,
-      }} />
+      <View
+        style={{
+          position: "absolute",
+          left: "-45%",
+          right: "-45%",
+          top: "55%",
+          height: "65%",
+          backgroundColor: "#C8E6C9", // light green
+          borderTopLeftRadius: 400, // wider arch
+          borderTopRightRadius: 400, // wider arch
+          zIndex: 0,
+        }}
+      />
       {/* Content */}
       <View style={themed([$topContainer, { alignItems: "center", justifyContent: "center", flex: 1, zIndex: 1 }])}>
         <Image style={themed([$welcomeLogo, { marginTop: 0 }])} source={welcomeLogo} resizeMode="contain" />
         <Text
           text="Level up your home life with EcoLife"
           preset="subheading"
-          style={themed([$welcomeHeading, { alignItems: "center" }])}/>
+          style={themed([$welcomeHeading, { alignItems: "center" }])}
+        />
       </View>
       <View style={themed([$bottomContainer, $bottomContainerInsets, { alignItems: "center", zIndex: 1 }])}>
         <Button testID="login-button" text="Login" preset="reversed" onPress={goLogin} style={{ width: "100%" }} />
-        <Button testID="register-button" text="Register" preset="reversed" onPress={goRegister} style={{ width: "100%", marginTop: spacing.xl }} />
+        <Button
+          testID="register-button"
+          text="Register"
+          preset="reversed"
+          onPress={goRegister}
+          style={{ width: "100%", marginTop: spacing.xl }}
+        />
       </View>
     </Screen>
   )

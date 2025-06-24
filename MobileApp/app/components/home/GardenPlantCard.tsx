@@ -21,10 +21,10 @@ export const GardenPlantCard: React.FC<GardenPlantCardProps> = ({ plant, onNavig
   return (
     <TouchableOpacity style={themed($plantCard)} onPress={onNavigate}>
       <View style={themed($plantImagePlaceholder)}>
-         <Icon icon="heart" size={48} color={theme.colors.palette.primary500}/>
+        <Icon icon="heart" size={48} color={theme.colors.palette.primary500} />
       </View>
       <Text style={themed($plantNickname)}>{plant.nickname}</Text>
-      {plant.status !== 'Happy' && (
+      {plant.status !== "Happy" && (
         <View style={themed($plantStatusBadge)}>
           <Icon icon="history" size={14} color={theme.colors.palette.accent500} />
           <Text style={themed($plantStatusText)}>{plant.status}</Text>
@@ -54,18 +54,18 @@ const $plantImagePlaceholder: ThemedStyle<ViewStyle> = ({ colors }) => ({
   height: 80,
   borderRadius: 40,
   backgroundColor: colors.palette.neutral300,
-  justifyContent: 'center',
-  alignItems: 'center',
+  justifyContent: "center",
+  alignItems: "center",
 })
 const $plantNickname: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.text,
   fontWeight: "bold",
-  textAlign: 'center',
-  marginTop: 8
+  textAlign: "center",
+  marginTop: 8,
 })
 const $plantStatusBadge: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  flexDirection: 'row',
-  alignItems: 'center',
+  flexDirection: "row",
+  alignItems: "center",
   backgroundColor: colors.palette.accent100,
   borderRadius: 12,
   paddingVertical: spacing.xxs,
@@ -74,6 +74,6 @@ const $plantStatusBadge: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
 const $plantStatusText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   color: colors.palette.accent500,
   fontSize: 12,
-  fontWeight: 'bold',
+  fontWeight: "bold",
   marginLeft: spacing.xs,
 })
