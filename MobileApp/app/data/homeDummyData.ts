@@ -1,6 +1,6 @@
 // Dummy data for Home screen
 export const userData = {
-  name: "Anna",
+  name: "SiFulan",
   avatarUrl: null,
 }
 
