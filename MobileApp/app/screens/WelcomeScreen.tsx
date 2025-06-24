@@ -41,30 +41,15 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     <Screen preset="fixed" contentContainerStyle={$styles.flex1}>
       <View style={themed($topContainer)}>
         <Image style={themed($welcomeLogo)} source={welcomeLogo} resizeMode="contain" />
-        <Text
-          testID="welcome-heading"
-          style={themed($welcomeHeading)}
-          tx="welcomeScreen:readyForLaunch"
-          preset="heading"
-        />
+        <Text testID="welcome-heading" style={themed($welcomeHeading)} tx="welcomeScreen:readyForLaunch" preset="heading" />
         <Text tx="welcomeScreen:exciting" preset="subheading" />
-        <Image
-          style={$welcomeFace}
-          source={welcomeFace}
-          resizeMode="contain"
-          tintColor={theme.colors.palette.neutral900}
-        />
+        <Image style={$welcomeFace} source={welcomeFace} resizeMode="contain" tintColor={theme.colors.palette.neutral900} />
       </View>
 
       <View style={themed([$bottomContainer, $bottomContainerInsets])}>
         <Text tx="welcomeScreen:postscript" size="md" />
 
-        <Button
-          testID="next-screen-button"
-          preset="reversed"
-          tx="welcomeScreen:letsGo"
-          onPress={goNext}
-        />
+        <Button testID="next-screen-button" preset="reversed" tx="welcomeScreen:letsGo" onPress={goNext} />
       </View>
     </Screen>
   )

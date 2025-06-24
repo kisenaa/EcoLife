@@ -137,9 +137,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
   const disabled = TextInputProps.editable === false || status === "disabled"
 
-  const placeholderContent = placeholderTx
-    ? translate(placeholderTx, placeholderTxOptions)
-    : placeholder
+  const placeholderContent = placeholderTx ? translate(placeholderTx, placeholderTxOptions) : placeholder
 
   const $containerStyles = [$containerStyleOverride]
 
@@ -163,11 +161,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     $inputStyleOverride,
   ]
 
-  const $helperStyles = [
-    $helperStyle,
-    status === "error" && { color: colors.error },
-    HelperTextProps?.style,
-  ]
+  const $helperStyles = [$helperStyle, status === "error" && { color: colors.error }, HelperTextProps?.style]
 
   /**
    *
@@ -181,12 +175,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
   useImperativeHandle(ref, () => input.current as TextInput)
 
   return (
-    <TouchableOpacity
-      activeOpacity={1}
-      style={$containerStyles}
-      onPress={focusInput}
-      accessibilityState={{ disabled }}
-    >
+    <TouchableOpacity activeOpacity={1} style={$containerStyles} onPress={focusInput} accessibilityState={{ disabled }}>
       {!!(label || labelTx) && (
         <Text
           preset="formLabel"

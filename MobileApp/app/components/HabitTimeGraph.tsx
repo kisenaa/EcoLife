@@ -27,10 +27,10 @@ export const HabitTimeGraph: React.FC<HabitTimeGraphProps> = ({ habits, timeRang
   const labels = getTimeLabels()
   const data = Array(24).fill(0)
 
-  habits.forEach(habit => {
-    let times: number[] = []
+  habits.forEach((habit) => {
+    const times: number[] = []
     if (habit.time.includes("-")) {
-      const [start, end] = habit.time.split("-").map(t => t.trim())
+      const [start, end] = habit.time.split("-").map((t) => t.trim())
       const startHour = parseInt(start.split(":")[0], 10)
       const endHour = parseInt(end.split(":")[0], 10)
       for (let h = startHour; h <= endHour; h++) {
@@ -39,13 +39,13 @@ export const HabitTimeGraph: React.FC<HabitTimeGraphProps> = ({ habits, timeRang
     } else {
       times.push(parseInt(habit.time.split(":")[0], 10))
     }
-    times.forEach(h => {
+    times.forEach((h) => {
       if (h >= 0 && h < data.length) data[h]++
     })
   })
 
   // X-axis label logic: show only some hour labels to avoid crowding
-  let displayLabels = labels.map((l, i) => {
+  const displayLabels = labels.map((l, i) => {
     if (timeRange === 24) return i % 3 === 0 ? l : ""
     if (timeRange === 12) return i % 2 === 0 ? l : ""
     if (timeRange === 6) return l // show all for 6h and 3h
@@ -61,11 +61,7 @@ export const HabitTimeGraph: React.FC<HabitTimeGraphProps> = ({ habits, timeRang
 
   return (
     <View style={{ marginBottom: theme.spacing.lg }}>
-      <Text
-        preset="subheading"
-        text={`Habits Timeline (Zoom: ${timeRange}h)`}
-        style={{ textAlign: "center", marginBottom: 8 }}
-      />
+      <Text preset="subheading" text={`Habits Timeline (Zoom: ${timeRange}h)`} style={{ textAlign: "center", marginBottom: 8 }} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         <View>
           <BarChart

@@ -21,25 +21,19 @@ export const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
     <View style={themed($quizCard)}>
       {!isFlipped ? (
         <>
-          <Text preset="subheading" style={themed($widgetTitle)}>Knowledge Sprout</Text>
+          <Text preset="subheading" style={themed($widgetTitle)}>
+            Knowledge Sprout
+          </Text>
           <Text style={themed($quizQuestion)}>{quiz.question}</Text>
-          <Button
-            text="Reveal Answer"
-            preset="reversed"
-            style={themed($quizButton)}
-            onPress={() => setIsFlipped(true)}
-          />
+          <Button text="Reveal Answer" preset="reversed" style={themed($quizButton)} onPress={() => setIsFlipped(true)} />
         </>
       ) : (
         <>
-          <Text preset="subheading" style={themed($widgetTitle)}>{quiz.answer}</Text>
+          <Text preset="subheading" style={themed($widgetTitle)}>
+            {quiz.answer}
+          </Text>
           <Text style={themed($quizQuestion)}>{quiz.explanation}</Text>
-          <Button
-            text="Got it!"
-            preset="default"
-            style={themed($quizButton)}
-            onPress={() => setIsFlipped(false)}
-          />
+          <Button text="Got it!" preset="default" style={themed($quizButton)} onPress={() => setIsFlipped(false)} />
         </>
       )}
     </View>
@@ -51,7 +45,7 @@ const $quizCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   borderRadius: 16,
   padding: spacing.md, // less padding
   minHeight: 120, // reduced minHeight
-  justifyContent: 'space-between',
+  justifyContent: "space-between",
   shadowColor: "#000",
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.1,
@@ -75,6 +69,6 @@ const $quizButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderWidth: 0,
 })
 const $quizButtonText: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: '#fff',
-  fontWeight: 'bold',
+  color: "#fff",
+  fontWeight: "bold",
 })

@@ -88,12 +88,7 @@ export function App() {
   // In iOS: application:didFinishLaunchingWithOptions:
   // In Android: https://stackoverflow.com/a/45838109/204044
   // You can replace with your own loading component if you wish.
-  if (
-    !rehydrated ||
-    !isNavigationStateRestored ||
-    !isI18nInitialized ||
-    (!areFontsLoaded && !fontLoadError)
-  ) {
+  if (!rehydrated || !isNavigationStateRestored || !isI18nInitialized || (!areFontsLoaded && !fontLoadError)) {
     return null
   }
 
@@ -106,11 +101,7 @@ export function App() {
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <KeyboardProvider>
-        <AppNavigator
-          linking={linking}
-          initialState={initialNavigationState}
-          onStateChange={onNavigationStateChange}
-        />
+        <AppNavigator linking={linking} initialState={initialNavigationState} onStateChange={onNavigationStateChange} />
       </KeyboardProvider>
     </SafeAreaProvider>
   )

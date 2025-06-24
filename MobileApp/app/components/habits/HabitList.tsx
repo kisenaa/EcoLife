@@ -23,7 +23,16 @@ interface HabitListProps {
   onMarkUndone: (id: number) => void
 }
 
-export const HabitList: React.FC<HabitListProps> = ({ habits, habitsKey, loading, error, onEdit, onRemove, onMarkDone, onMarkUndone }) => {
+export const HabitList: React.FC<HabitListProps> = ({
+  habits,
+  habitsKey,
+  loading,
+  error,
+  onEdit,
+  onRemove,
+  onMarkDone,
+  onMarkUndone,
+}) => {
   const { themed, theme } = useAppTheme({ useForest: true })
   return loading ? (
     <Text style={{ textAlign: "center", marginTop: 32 }}>Loading...</Text>
@@ -33,20 +42,16 @@ export const HabitList: React.FC<HabitListProps> = ({ habits, habitsKey, loading
     <FlatList
       key={habitsKey}
       data={habits}
-      keyExtractor={item => item.id?.toString()}
+      keyExtractor={(item) => item.id?.toString()}
       contentContainerStyle={themed($list)}
       renderItem={({ item }) => (
         <TouchableOpacity
           onLongPress={() => {
-            Alert.alert(
-              item.name,
-              undefined,
-              [
-                { text: "Edit", onPress: () => onEdit(item) },
-                { text: "Remove", style: "destructive", onPress: () => onRemove(item.id) },
-                { text: "Cancel", style: "cancel" },
-              ]
-            )
+            Alert.alert(item.name, undefined, [
+              { text: "Edit", onPress: () => onEdit(item) },
+              { text: "Remove", style: "destructive", onPress: () => onRemove(item.id) },
+              { text: "Cancel", style: "cancel" },
+            ])
           }}
           activeOpacity={0.9}
         >
@@ -62,14 +67,10 @@ export const HabitList: React.FC<HabitListProps> = ({ habits, habitsKey, loading
               disabled={false}
               onPress={() => {
                 if (item.completed) {
-                  Alert.alert(
-                    "Undo Reminder",
-                    "Do you want to mark this reminder as not done?",
-                    [
-                      { text: "Cancel", style: "cancel" },
-                      { text: "Undo", style: "destructive", onPress: () => onMarkUndone(item.id) },
-                    ]
-                  )
+                  Alert.alert("Undo Reminder", "Do you want to mark this reminder as not done?", [
+                    { text: "Cancel", style: "cancel" },
+                    { text: "Undo", style: "destructive", onPress: () => onMarkUndone(item.id) },
+                  ])
                 } else {
                   onMarkDone(item.id)
                 }

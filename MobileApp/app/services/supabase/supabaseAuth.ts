@@ -1,5 +1,5 @@
 // Supabase authentication helpers
-import { supabase } from './supabaseClient'
+import { supabase } from "./supabaseClient"
 
 export async function signInWithEmail(email: string, password: string) {
   return supabase.auth.signInWithPassword({ email, password })

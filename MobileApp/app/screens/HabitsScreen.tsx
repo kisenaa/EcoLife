@@ -45,7 +45,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
 
   useEffect(() => {
     // Wait for user session before loading habits
-    getCurrentUser().then(userRes => {
+    getCurrentUser().then((userRes) => {
       const id = userRes?.data?.user?.id || null
       setUserId(id)
       if (id) loadHabits(id)
@@ -185,36 +185,39 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
   }
 
   // Calculate completed and total habits from habitList
-  const completedCount = habitList.filter(h => h.completed).length
+  const completedCount = habitList.filter((h) => h.completed).length
   const totalCount = habitList.length
 
-  const displayHabits = useMemo(() =>
-    habitList
-      .slice()
-      .sort((a, b) => {
-        // 1. Not done (completed: 0) at the top, done (completed: 1) at the bottom
-        if (a.completed !== b.completed) return a.completed - b.completed
-        // 2. Earliest start time at the top
-        if (!a.reminder_start) return 1
-        if (!b.reminder_start) return -1
-        const startCompare = a.reminder_start.localeCompare(b.reminder_start)
-        if (startCompare !== 0) return startCompare
-        // 3. Earliest end time at the top (nulls last)
-        if (!a.reminder_end && b.reminder_end) return 1
-        if (a.reminder_end && !b.reminder_end) return -1
-        if (!a.reminder_end && !b.reminder_end) return 0
-        return a.reminder_end.localeCompare(b.reminder_end)
-      })
-      .map(h => ({
-        ...h,
-        time: h.reminder_start
-          ? h.reminder_end
-            ? `${formatTimeString(h.reminder_start)} - ${formatTimeString(h.reminder_end)}`
-            : formatTimeString(h.reminder_start)
-          : "",
-      })), [habitList])
+  const displayHabits = useMemo(
+    () =>
+      habitList
+        .slice()
+        .sort((a, b) => {
+          // 1. Not done (completed: 0) at the top, done (completed: 1) at the bottom
+          if (a.completed !== b.completed) return a.completed - b.completed
+          // 2. Earliest start time at the top
+          if (!a.reminder_start) return 1
+          if (!b.reminder_start) return -1
+          const startCompare = a.reminder_start.localeCompare(b.reminder_start)
+          if (startCompare !== 0) return startCompare
+          // 3. Earliest end time at the top (nulls last)
+          if (!a.reminder_end && b.reminder_end) return 1
+          if (a.reminder_end && !b.reminder_end) return -1
+          if (!a.reminder_end && !b.reminder_end) return 0
+          return a.reminder_end.localeCompare(b.reminder_end)
+        })
+        .map((h) => ({
+          ...h,
+          time: h.reminder_start
+            ? h.reminder_end
+              ? `${formatTimeString(h.reminder_start)} - ${formatTimeString(h.reminder_end)}`
+              : formatTimeString(h.reminder_start)
+            : "",
+        })),
+    [habitList],
+  )
 
-  const habitsKey = useMemo(() => habitList.map(h => `${h.id}:${h.completed}`).join("|"), [habitList])
+  const habitsKey = useMemo(() => habitList.map((h) => `${h.id}:${h.completed}`).join("|"), [habitList])
 
   return (
     <>
@@ -224,7 +227,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
           <View style={themed($graphContainer)}>
             <View style={themed($rangeSelector)}>
-              {TIME_RANGES.map(range => (
+              {TIME_RANGES.map((range) => (
                 <Text
                   key={range}
                   style={themed(selectedRange === range ? $selectedRangeButton : $rangeButton)}
@@ -234,11 +237,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
                 </Text>
               ))}
             </View>
-            <HabitTimeGraph
-              key={habitsKey}
-              habits={displayHabits}
-              timeRange={selectedRange as 24 | 12 | 6 | 3}
-            />
+            <HabitTimeGraph key={habitsKey} habits={displayHabits} timeRange={selectedRange as 24 | 12 | 6 | 3} />
           </View>
           <HabitList
             habits={displayHabits}
@@ -276,7 +275,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
         open={isStartPickerVisible}
         date={startDate}
         mode="time"
-        onConfirm={date => {
+        onConfirm={(date) => {
           setStartPickerVisible(false)
           setStartDate(date)
           setNewHabitStart(formatTime(date))
@@ -288,7 +287,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
         open={isEndPickerVisible}
         date={endDate}
         mode="time"
-        onConfirm={date => {
+        onConfirm={(date) => {
           setEndPickerVisible(false)
           setEndDate(date)
           setNewHabitEnd(formatTime(date))

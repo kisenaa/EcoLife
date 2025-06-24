@@ -13,7 +13,7 @@ interface HabitHeroProps {
 
 export const HabitHero: React.FC<HabitHeroProps> = ({ habits, onNavigate }) => {
   const { themed, theme } = useAppTheme({ useForest: true })
-  const progress = habits.total > 0 ? (habits.completed / habits.total) : 0
+  const progress = habits.total > 0 ? habits.completed / habits.total : 0
 
   // Animated progress for smooth wave animation
   const animatedProgress = useRef(new Animated.Value(progress)).current
@@ -60,5 +60,5 @@ const $heroCircle: ThemedStyle<ViewStyle> = ({}) => ({
 const $heroText: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
   marginTop: spacing.md,
   color: colors.text,
-  fontWeight: '600'
+  fontWeight: "600",
 })

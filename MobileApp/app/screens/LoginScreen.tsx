@@ -64,20 +64,15 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         onSubmitEditing={login}
         style={themed($textField)}
       />
-      {error ? <Text text={error} style={{ color: 'red', marginBottom: 8 }} /> : null}
-      <Button
-        text={isLoading ? "Logging in..." : "Log In"}
-        onPress={login}
-        style={themed($tapButton)}
-        disabled={isLoading}
-      />
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
+      {error ? <Text text={error} style={{ color: "red", marginBottom: 8 }} /> : null}
+      <Button text={isLoading ? "Logging in..." : "Log In"} onPress={login} style={themed($tapButton)} disabled={isLoading} />
+      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 16 }}>
         <Text text="Forgot Username?" style={themed($forgotLink)} />
         <Text text="Forgot Password?" style={themed($forgotLink)} />
       </View>
       <View style={themed($footer)}>
         <Text text="Don't have an account?" />
-        <Text text="Register" onPress={() => navigation.navigate("Register") } style={themed($loginLink)} />
+        <Text text="Register" onPress={() => navigation.navigate("Register")} style={themed($loginLink)} />
       </View>
     </Screen>
   )

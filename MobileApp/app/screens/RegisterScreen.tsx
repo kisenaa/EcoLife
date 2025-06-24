@@ -13,7 +13,10 @@ interface RegisterScreenProps extends AppStackScreenProps<"Register"> {}
 
 export const RegisterScreen: FC<RegisterScreenProps> = observer(function RegisterScreen(_props) {
   const { navigation } = _props
-  const { themed, theme: { colors } } = useAppTheme()
+  const {
+    themed,
+    theme: { colors },
+  } = useAppTheme()
 
   const emailInput = useRef<TextInput>(null)
   const passwordInput = useRef<TextInput>(null)
@@ -120,7 +123,11 @@ export const RegisterScreen: FC<RegisterScreenProps> = observer(function Registe
         accessibilityLabel="Confirm password input"
       />
       {error ? (
-        <Text text={error} style={{ color: colors.error, marginBottom: 8, textAlign: "center" }} accessibilityLiveRegion="polite" />
+        <Text
+          text={error}
+          style={{ color: colors.error, marginBottom: 8, textAlign: "center" }}
+          accessibilityLiveRegion="polite"
+        />
       ) : null}
       <Button
         text={isLoading ? "Registering..." : "Register"}

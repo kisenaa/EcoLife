@@ -20,13 +20,30 @@ interface HabitModalProps {
   onCancel: () => void
 }
 
-export const HabitModal: React.FC<HabitModalProps> = ({ visible, editMode, creating, newHabitName, newHabitStart, newHabitEnd, onChangeName, onOpenStart, onOpenEnd, onClose, onSave, onCancel }) => {
+export const HabitModal: React.FC<HabitModalProps> = ({
+  visible,
+  editMode,
+  creating,
+  newHabitName,
+  newHabitStart,
+  newHabitEnd,
+  onChangeName,
+  onOpenStart,
+  onOpenEnd,
+  onClose,
+  onSave,
+  onCancel,
+}) => {
   const { themed, theme } = useAppTheme({ useForest: true })
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <View style={themed($modalOverlay)}>
         <View style={themed($modalContent)}>
-          <Text preset="heading" text={editMode ? "Edit Reminder" : "Add Reminder"} style={{ textAlign: "center", marginBottom: 24 }} />
+          <Text
+            preset="heading"
+            text={editMode ? "Edit Reminder" : "Add Reminder"}
+            style={{ textAlign: "center", marginBottom: 24 }}
+          />
           <TextInput
             placeholder="Reminder name (e.g., 'Morning Jog')"
             value={newHabitName}
@@ -45,11 +62,24 @@ export const HabitModal: React.FC<HabitModalProps> = ({ visible, editMode, creat
             </TouchableOpacity>
           </View>
           <View style={themed($modalActions)}>
-            <TouchableOpacity style={[themed($modalButton), { backgroundColor: theme.colors.palette.neutral300 }]} onPress={onCancel} disabled={creating}>
+            <TouchableOpacity
+              style={[themed($modalButton), { backgroundColor: theme.colors.palette.neutral300 }]}
+              onPress={onCancel}
+              disabled={creating}
+            >
               <Text style={{ textAlign: "center", color: theme.colors.text }}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[themed($modalButton), { backgroundColor: theme.colors.tint, opacity: !newHabitName || !newHabitStart || creating ? 0.5 : 1 }]} onPress={onSave} disabled={!newHabitName || !newHabitStart || creating}>
-              <Text style={themed($modalButtonText)}>{creating ? (editMode ? "Saving..." : "Adding...") : (editMode ? "Save" : "Add")}</Text>
+            <TouchableOpacity
+              style={[
+                themed($modalButton),
+                { backgroundColor: theme.colors.tint, opacity: !newHabitName || !newHabitStart || creating ? 0.5 : 1 },
+              ]}
+              onPress={onSave}
+              disabled={!newHabitName || !newHabitStart || creating}
+            >
+              <Text style={themed($modalButtonText)}>
+                {creating ? (editMode ? "Saving..." : "Adding...") : editMode ? "Save" : "Add"}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -58,9 +88,43 @@ export const HabitModal: React.FC<HabitModalProps> = ({ visible, editMode, creat
   )
 }
 
-const $modalOverlay: ThemedStyle<ViewStyle> = ({}) => ({ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0, 0, 0, 0.5)" })
-const $modalContent: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({ backgroundColor: colors.background, borderRadius: 16, padding: spacing.lg, width: "90%", shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5 })
-const $textInput: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({ borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 12, marginBottom: 16, color: colors.text, fontSize: 16, justifyContent: "center" })
-const $modalActions: ThemedStyle<ViewStyle> = ({}) => ({ flexDirection: "row", justifyContent: "space-between", marginTop: 16, gap: 12 })
-const $modalButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({ flex: 1, padding: spacing.md, borderRadius: 8, alignItems: "center" })
+const $modalOverlay: ThemedStyle<ViewStyle> = ({}) => ({
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+})
+const $modalContent: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.background,
+  borderRadius: 16,
+  padding: spacing.lg,
+  width: "90%",
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.25,
+  shadowRadius: 4,
+  elevation: 5,
+})
+const $textInput: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  borderWidth: 1,
+  borderColor: colors.border,
+  borderRadius: 8,
+  padding: 12,
+  marginBottom: 16,
+  color: colors.text,
+  fontSize: 16,
+  justifyContent: "center",
+})
+const $modalActions: ThemedStyle<ViewStyle> = ({}) => ({
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginTop: 16,
+  gap: 12,
+})
+const $modalButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flex: 1,
+  padding: spacing.md,
+  borderRadius: 8,
+  alignItems: "center",
+})
 const $modalButtonText: ThemedStyle<TextStyle> = ({ colors }) => ({ color: colors.background, fontWeight: "bold" })

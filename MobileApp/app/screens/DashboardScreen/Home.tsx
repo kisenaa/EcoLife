@@ -21,10 +21,10 @@ export const Home: React.FC<DashboardTabScreenProps<"Home">> = function Home(_pr
 
   // Fetch and update habit stats
   const fetchAndSetHabitStats = () => {
-    getCurrentUser().then(userRes => {
+    getCurrentUser().then((userRes) => {
       const userId = userRes?.data?.user?.id
       if (!userId) return
-      fetchHabits(userId).then(res => {
+      fetchHabits(userId).then((res) => {
         const habits = res.data || []
         setHabitStats({
           completed: habits.filter((h: any) => h.completed).length,
@@ -36,7 +36,7 @@ export const Home: React.FC<DashboardTabScreenProps<"Home">> = function Home(_pr
 
   useEffect(() => {
     fetchAndSetHabitStats()
-    const unsubscribe = navigation.addListener('focus', fetchAndSetHabitStats)
+    const unsubscribe = navigation.addListener("focus", fetchAndSetHabitStats)
     return unsubscribe
   }, [navigation])
 
@@ -45,15 +45,24 @@ export const Home: React.FC<DashboardTabScreenProps<"Home">> = function Home(_pr
   return (
     <Screen preset="scroll" contentContainerStyle={themed($container)}>
       <HeaderGreeting user={userData} />
-      <HabitHero habits={habitStats} onNavigate={() => navigation.navigate("Habits")}/>
+      <HabitHero habits={habitStats} onNavigate={() => navigation.navigate("Habits")} />
       <View style={themed($cardSection)}>
         <View style={themed($cardHeader)}>
           <Text style={themed($widgetTitle)} text="Your Garden" />
-          <Button text="View All" style={themed($viewAllButton)} textStyle={themed($viewAllButtonText)} onPress={() => navigation.navigate("Plants")}/>
+          <Button
+            text="View All"
+            style={themed($viewAllButton)}
+            textStyle={themed($viewAllButtonText)}
+            onPress={() => navigation.navigate("Plants")}
+          />
         </View>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: "row" }}>
           {plantData.map((item) => (
-            <GardenPlantCard key={item.id} plant={item} onNavigate={() => navigation.navigate("PlantDetail", { plantId: item.id })} />
+            <GardenPlantCard
+              key={item.id}
+              plant={item}
+              onNavigate={() => navigation.navigate("PlantDetail", { plantId: item.id })}
+            />
           ))}
         </View>
       </View>
@@ -86,8 +95,8 @@ const $primaryCTA: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   borderWidth: 0,
 })
 const $primaryCTAText: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: '#fff',
-  fontWeight: 'bold',
+  color: "#fff",
+  fontWeight: "bold",
 })
 const $cardSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.md, // tighter vertical spacing
@@ -111,5 +120,5 @@ const $viewAllButton: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
 })
 const $viewAllButtonText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.palette.primary600,
-  fontWeight: 'bold',
+  fontWeight: "bold",
 })
