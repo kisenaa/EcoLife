@@ -4,7 +4,7 @@ import { TextStyle, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "../components"
 import { translate } from "@/i18n"
-import { DemoShowroomScreen, DemoCommunityScreen, EduScreen } from "../screens"
+import { DemoShowroomScreen, DemoCommunityScreen, EduScreen, FeedPost } from "../screens"
 import type { ThemedStyle } from "@/theme"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 import { useAppTheme } from "@/utils/useAppTheme"
@@ -19,6 +19,7 @@ export type DashboardTabParamList = {
   DemoShowroom: { queryIndex?: string; itemIndex?: string }
   DemoDebug: undefined
   DemoPodcastList: undefined
+  feed: undefined
 }
 
 /**
@@ -76,11 +77,11 @@ export function DashboardNavigator() {
         }}
       />
       <Tab.Screen
-        name="DemoShowroom"
-        component={DemoShowroomScreen}
+        name="feed"
+        component={FeedPost}
         options={{
-          tabBarLabel: translate("DashboardNavigator:componentsTab"),
-          tabBarIcon: ({ focused }) => <Icon icon="components" color={focused ? colors.tint : colors.tintInactive} size={30} />,
+          tabBarLabel: "Feed",
+          tabBarIcon: ({ focused }) => <MdIcon source="forum" color={focused ? colors.tint : colors.tintInactive} size={32} />,
         }}
       />
       <Tab.Screen
