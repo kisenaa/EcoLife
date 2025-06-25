@@ -1,6 +1,6 @@
-import React from "react"
-import { View, Alert, TouchableOpacity } from "react-native"
-import { Text, Button } from "../"
+import React, { useState } from "react"
+import { FlatList, TouchableOpacity, View, Alert, Modal } from "react-native"
+import { Text, Button } from "../../components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import type { ThemedStyle } from "@/theme"
 import type { ViewStyle, TextStyle } from "react-native"
@@ -36,79 +36,145 @@ export const HabitList: React.FC<HabitListProps> = ({
   onMarkUndone,
 }) => {
   const { themed, theme } = useAppTheme({ useForest: true })
+  const [actionModalVisible, setActionModalVisible] = useState(false)
+  const [confirmDeleteVisible, setConfirmDeleteVisible] = useState(false)
+  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null)
 
-  if (loading) {
-    return (
-      <View style={themed($loadingContainer)}>
-        <Text style={themed($loadingText)} text="Loading habits..." />
-      </View>
-    )
+  function openActionModal(habit: Habit) {
+    setSelectedHabit(habit)
+    setActionModalVisible(true)
   }
 
-  if (error) {
-    return (
-      <View style={themed($errorContainer)}>
-        <Text style={themed($errorText)} text={error} />
-      </View>
-    )
+  function handleEdit() {
+    if (selectedHabit) onEdit(selectedHabit)
+    setActionModalVisible(false)
   }
 
-  if (habits.length === 0) {
-    return (
-      <View style={themed($emptyContainer)}>
-        <Text style={themed($emptyText)} text="No habits yet. Tap + to add your first habit!" />
-      </View>
-    )
+  function handleDelete() {
+    setActionModalVisible(false)
+    setConfirmDeleteVisible(true)
   }
 
-  return (
-    <View style={themed($container)}>
-      {habits.map((item) => (
-        <TouchableOpacity
-          key={item.id}
-          onLongPress={() => {
-            Alert.alert(item.name, "Choose an action:", [
-              { text: "Edit", onPress: () => onEdit(item) },
-              { text: "Remove", style: "destructive", onPress: () => onRemove(item.id) },
-              { text: "Cancel", style: "cancel" },
-            ])
-          }}
-          activeOpacity={0.9}
-        >
-          <View style={themed($habitCard)}>
-            <View style={themed($habitInfo)}>
-              <Text style={themed($habitName)} text={item.name} />
-              <Text style={themed($habitTime)} text={item.time} />
+  function confirmDelete() {
+    if (selectedHabit) onRemove(selectedHabit.id)
+    setConfirmDeleteVisible(false)
+  }
+
+  function handleCancel() {
+    setActionModalVisible(false)
+    setSelectedHabit(null)
+  }
+
+  return loading ? (
+    <Text style={{ textAlign: "center", marginTop: 32 }}>Loading...</Text>
+  ) : error ? (
+    <Text style={{ color: theme.colors.error, textAlign: "center", marginTop: 32 }}>{error}</Text>
+  ) : (
+    <>
+      <FlatList
+        key={habitsKey}
+        data={habits}
+        keyExtractor={(item) => item.id?.toString()}
+        contentContainerStyle={themed($list)}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onLongPress={() => openActionModal(item)}
+            activeOpacity={0.9}
+          >
+            <View style={themed($habitCard)}>
+              <View style={themed($habitInfo)}>
+                <Text style={themed($habitName)} text={item.name} />
+                <Text style={themed($habitTime)} text={item.time} />
+              </View>
+              <Button
+                text={item.completed ? "Done" : "Mark Done"}
+                style={themed(item.completed ? $doneButton : $markButton)}
+                textStyle={themed($buttonText)}
+                disabled={false}
+                onPress={() => {
+                  if (item.completed) {
+                    Alert.alert("Undo Reminder", "Do you want to mark this reminder as not done?", [
+                      { text: "Cancel", style: "cancel" },
+                      { text: "Undo", style: "destructive", onPress: () => onMarkUndone(item.id) },
+                    ])
+                  } else {
+                    onMarkDone(item.id)
+                  }
+                }}
+              />
             </View>
-            <Button
-              text={item.completed ? "Done" : "Mark Done"}
-              style={themed(item.completed ? $doneButton : $markButton)}
-              textStyle={themed($buttonText)}
-              onPress={() => {
-                if (item.completed) {
-                  Alert.alert("Undo Reminder", "Do you want to mark this reminder as not done?", [
-                    { text: "Cancel", style: "cancel" },
-                    { text: "Undo", style: "destructive", onPress: () => onMarkUndone(item.id) },
-                  ])
-                } else {
-                  onMarkDone(item.id)
-                }
-              }}
-            />
+          </TouchableOpacity>
+        )}
+        scrollEnabled={false}
+      />
+      {/* Action Modal */}
+      <Modal
+        visible={actionModalVisible}
+        animationType="fade"
+        transparent
+        onRequestClose={handleCancel}
+      >
+        <View style={themed($modalOverlay)}>
+          <View style={themed($modalContent)}>
+            <Text style={{ fontWeight: "bold", fontSize: 18, marginBottom: 12 }}>{selectedHabit?.name}</Text>
+            <Text style={{ marginBottom: 20 }}>{selectedHabit?.time}</Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 8 }}>
+              <Button
+                text="Cancel"
+                onPress={handleCancel}
+                style={{ flex: 1, marginRight: 8, backgroundColor: theme.colors.palette.neutral200 }}
+                textStyle={{ color: theme.colors.text }}
+              />
+              <Button
+                text="Edit"
+                onPress={handleEdit}
+                style={{ flex: 1, marginLeft: 8, marginRight: 8, backgroundColor: theme.colors.tint }}
+                textStyle={{ color: theme.colors.background }}
+              />
+              <Button
+                text="Delete"
+                onPress={handleDelete}
+                style={{ flex: 1, marginLeft: 8, backgroundColor: theme.colors.error }}
+                textStyle={{ color: "#fff" }}
+              />
+            </View>
           </View>
-        </TouchableOpacity>
-      ))}
-    </View>
+        </View>
+      </Modal>
+      {/* Confirm Delete Modal */}
+      <Modal
+        visible={confirmDeleteVisible}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setConfirmDeleteVisible(false)}
+      >
+        <View style={themed($modalOverlay)}>
+          <View style={themed($modalContent)}>
+            <Text style={{ fontWeight: "bold", fontSize: 18, marginBottom: 12, color: theme.colors.error }}>Delete Habit?</Text>
+            <Text style={{ marginBottom: 20 }}>Are you sure you want to delete this habit? This action cannot be undone.</Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <Button
+                text="Cancel"
+                onPress={() => setConfirmDeleteVisible(false)}
+                style={{ flex: 1, marginRight: 8, backgroundColor: theme.colors.palette.neutral200 }}
+                textStyle={{ color: theme.colors.text }}
+              />
+              <Button
+                text="Delete"
+                onPress={confirmDelete}
+                style={{ flex: 1, marginLeft: 8, backgroundColor: theme.colors.error }}
+                textStyle={{ color: "#fff" }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </>
   )
 }
 
-const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  gap: spacing.md,
-})
-
-const $loadingContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  padding: spacing.lg,
-  alignItems: "center",
+const $list: ThemedStyle<ViewStyle> = ({}) => ({
+  gap: 16,
 })
 
 const $loadingText: ThemedStyle<TextStyle> = ({ colors }) => ({
@@ -179,8 +245,28 @@ const $doneButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderRadius: 8,
 })
 
-const $buttonText: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.background,
-  fontSize: 14,
-  fontWeight: "600",
+const $buttonText: ThemedStyle<TextStyle> = ({ colors }) => {
+  return {
+    color: colors.text,
+    fontWeight: "bold",
+    textAlign: "center",
+  }
+}
+
+const $modalOverlay: ThemedStyle<ViewStyle> = ({}) => ({
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+})
+const $modalContent: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.background,
+  borderRadius: 16,
+  padding: spacing.lg,
+  width: 320,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.25,
+  shadowRadius: 4,
+  elevation: 5,
 })
