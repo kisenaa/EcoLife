@@ -27,9 +27,11 @@ export const HabitFAB: React.FC<HabitFABProps> = ({ onPress }) => {
 const $fabContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   position: "absolute",
   right: spacing.lg,
-  bottom: spacing.lg,
+  bottom: spacing.xl + 25, // Adjust for better positioning
   zIndex: 10,
+  elevation: 10, // For Android
 })
+
 const $fabButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.tint,
   borderRadius: 32,
@@ -42,6 +44,7 @@ const $fabButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   shadowRadius: 8,
   elevation: 4,
 })
+
 const $fabButtonText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.background,
   fontSize: 32,

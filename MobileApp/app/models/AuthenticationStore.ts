@@ -1,3 +1,4 @@
+import { set } from "date-fns"
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
 
 export const AuthenticationStoreModel = types
@@ -5,6 +6,7 @@ export const AuthenticationStoreModel = types
   .props({
     authToken: types.maybe(types.string),
     authEmail: "",
+    authUser: "",
   })
   .views((store) => ({
     get isAuthenticated() {
@@ -27,6 +29,9 @@ export const AuthenticationStoreModel = types
     logout() {
       store.authToken = undefined
       store.authEmail = ""
+    },
+    setAuthUser(value: string) {
+      store.authUser = value.trim()
     },
   }))
 
