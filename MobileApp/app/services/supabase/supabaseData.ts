@@ -53,3 +53,43 @@ export async function editHabit(
 export async function deleteHabit(habitId: number) {
   return supabase.from("habits").delete().eq("id", habitId)
 }
+
+// Fetch all plants for the current user
+export async function fetchPlants(userId?: string) {
+  if (!userId) return { data: [], error: null }
+  return supabase.from('plants').select('*').eq('user_id', userId)
+}
+
+// Create a new plant
+export async function createPlant(plant: {
+  user_id: string
+  nickname: string
+  growth_stage: number
+  status: string
+  image_url: string
+}) {
+  return supabase.from('plants').insert([plant])
+}
+
+// Fetch a single plant by id
+export async function fetchPlantById(plantId: number | string) {
+  return supabase.from('plants').select('*').eq('id', plantId).single()
+}
+
+// Update a plant (e.g., rename, change status, etc.)
+export async function updatePlant(
+  plantId: number | string,
+  updates: Partial<{
+    nickname: string
+    growth_stage: number
+    status: string
+    image_url: string
+  }>
+) {
+  return supabase.from('plants').update(updates).eq('id', plantId)
+}
+
+// Delete a plant by id
+export async function deletePlant(plantId: number | string) {
+  return supabase.from('plants').delete().eq('id', plantId)
+}
