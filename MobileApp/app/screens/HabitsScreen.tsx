@@ -222,6 +222,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
   return (
     <>
       <Screen preset="scroll" contentContainerStyle={themed($container)} safeAreaEdges={["top"]}>
+      <Screen preset="scroll" contentContainerStyle={themed($container)} safeAreaEdges={["top"]}>
         <Text preset="heading" style={themed($heading)} text="Your Habits" />
         <Text preset="subheading" style={themed($subheading)} text={`Completed: ${completedCount} / ${totalCount}`} />
         <View style={themed($graphContainer)}>
@@ -356,4 +357,11 @@ const $selectedRangeButton = ({ colors, spacing }: any) => ({
   paddingVertical: spacing.xs,
   minWidth: 48,
   marginHorizontal: 2,
+})
+
+const $fabWrapper = ({ spacing }: any) => ({
+  position: "absolute",
+  bottom: 0,
+  right: spacing.lg,
+  zIndex: 1,
 })
