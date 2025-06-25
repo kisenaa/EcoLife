@@ -16,3 +16,10 @@ export async function signOut() {
 export function getCurrentUser() {
   return supabase.auth.getUser()
 }
+
+// Add this to your supabaseAuth.ts file
+export async function updatePassword(newPassword: string) {
+  return supabase.auth.updateUser({
+    password: newPassword,
+  })
+}

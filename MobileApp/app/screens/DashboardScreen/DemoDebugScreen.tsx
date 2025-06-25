@@ -2,12 +2,12 @@ import { FC, useCallback, useMemo } from "react"
 import * as Application from "expo-application"
 import { LayoutAnimation, Linking, Platform, TextStyle, useColorScheme, View, ViewStyle } from "react-native"
 import { Button, ListItem, Screen, Text } from "../../components"
-import { DashboardTabScreenProps } from "../../navigators/DashboardNavigator"
 import type { ThemedStyle } from "@/theme"
 import { $styles } from "../../theme"
 import { isRTL } from "@/i18n"
 import { useStores } from "../../models"
 import { useAppTheme } from "@/utils/useAppTheme"
+import { DemoDebugStackScreenProps } from "@/navigators/stack/DemoDebug"
 
 /**
  * @param {string} url - The URL to open in the browser.
@@ -19,11 +19,12 @@ function openLinkInBrowser(url: string) {
 
 const usingHermes = typeof HermesInternal === "object" && HermesInternal !== null
 
-export const DemoDebugScreen: FC<DashboardTabScreenProps<"DemoDebug">> = function DemoDebugScreen(_props) {
+export const DemoDebugScreen: FC<DemoDebugStackScreenProps<"DemoDebugMain">> = function DemoDebugScreen(_props) {
   const { setThemeContextOverride, themeContext, themed } = useAppTheme()
   const {
     authenticationStore: { logout },
   } = useStores()
+  const { navigation } = _props
 
   // @ts-expect-error
   const usingFabric = global.nativeFabricUIManager != null
@@ -75,6 +76,9 @@ export const DemoDebugScreen: FC<DashboardTabScreenProps<"DemoDebug">> = functio
       <View style={themed($itemsContainer)}>
         <Button onPress={toggleTheme} text={`Toggle Theme: ${themeContext}`} style={themed($toggleThemeButton)} />
       </View>
+
+      <Button text="Profile" style={themed($button)} onPress={() => navigation.navigate("Profile")} />
+
       <View style={themed($itemsContainer)}>
         <ListItem
           LeftComponent={
