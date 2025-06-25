@@ -185,7 +185,7 @@ export const RegisterScreen: FC<RegisterScreenProps> = observer(function Registe
 // --- STYLES (Copied from LoginScreen.tsx for consistency) ---
 
 const $screenContentContainer: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
-  flex: 1,
+  flexGrow: 1,
   justifyContent: "center",
   paddingVertical: spacing.xxl,
   paddingHorizontal: spacing.lg,

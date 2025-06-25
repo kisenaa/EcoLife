@@ -1,11 +1,6 @@
 // Supabase data helpers (stub examples)
 import { supabase } from "./supabaseClient"
 
-// Example: Fetch user profile
-export async function fetchUserProfile(userId: string) {
-  return supabase.from("profiles").select("*").eq("id", userId).single()
-}
-
 // Insert a new habit (with all required columns)
 export async function createHabit(habit: {
   user_id: string
@@ -52,6 +47,34 @@ export async function editHabit(
 // Delete a habit by id
 export async function deleteHabit(habitId: number) {
   return supabase.from("habits").delete().eq("id", habitId)
+}
+
+export async function fetchUserProfile(userId: string) {
+  return supabase
+    .from("profiles")
+    .select("user_id, username, full_name, avatar_url, updated_at") // Explicitly select columns that exist
+    .eq("user_id", userId)
+    .single()
+}
+
+// Update user profile
+export async function updateUserProfile(
+  userId: string,
+  updates: {
+    username?: string
+    full_name?: string
+    avatar_url?: string
+  },
+) {
+  return supabase
+    .from("profiles")
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq("user_id", userId)
+}
+
+// Create user profile
+export async function createUserProfile(profile: { user_id: string; username: string; full_name?: string; avatar_url?: string }) {
+  return supabase.from("profiles").insert([profile])
 }
 
 // Fetch all plants for the current user

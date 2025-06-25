@@ -9,18 +9,20 @@ interface Habit {
   id: number
   name: string
   time: string
-  completed: boolean
+  completed: number
+  reminder_start?: string
+  reminder_end?: string
 }
 
 interface HabitListProps {
   habits: Habit[]
   habitsKey: string
   loading: boolean
-  error: string | null
+  error?: string | null
   onEdit: (habit: Habit) => void
-  onRemove: (id: number) => void
-  onMarkDone: (id: number) => void
-  onMarkUndone: (id: number) => void
+  onRemove: (habitId: number) => void
+  onMarkDone: (habitId: number) => void
+  onMarkUndone: (habitId: number) => void
 }
 
 export const HabitList: React.FC<HabitListProps> = ({
@@ -175,64 +177,73 @@ const $list: ThemedStyle<ViewStyle> = ({}) => ({
   gap: 16,
 })
 
-const $habitCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => {
-  return {
-    backgroundColor: colors.palette.neutral100,
-    borderRadius: 16,
-    padding: spacing.md,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    shadowColor: colors.palette.neutral900,
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
-    marginBottom: spacing.sm,
-  }
-}
+const $loadingText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
+})
 
-const $habitInfo: ThemedStyle<ViewStyle> = ({}) => {
-  return {
-    flex: 1,
-    flexDirection: "column",
-  }
-}
+const $errorContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  padding: spacing.lg,
+  alignItems: "center",
+})
 
-const $habitName: ThemedStyle<TextStyle> = ({ colors }) => {
-  return {
-    color: colors.text,
-    fontWeight: "bold",
-    fontSize: 16,
-    marginBottom: 2,
-  }
-}
+const $errorText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.error,
+  textAlign: "center",
+})
 
-const $habitTime: ThemedStyle<TextStyle> = ({ colors }) => {
-  return {
-    color: colors.textDim,
-    fontSize: 14,
-  }
-}
+const $emptyContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  padding: spacing.xl,
+  alignItems: "center",
+})
 
-const $markButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => {
-  return {
-    backgroundColor: colors.tint,
-    borderRadius: 8,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    minWidth: 90,
-  }
-}
+const $emptyText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
+  textAlign: "center",
+  fontStyle: "italic",
+})
 
-const $doneButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => {
-  return {
-    backgroundColor: colors.palette.neutral300,
-    borderRadius: 8,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    minWidth: 90,
-  }
-}
+const $habitCard: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+  backgroundColor: colors.background,
+  padding: spacing.md,
+  borderRadius: 12,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  shadowColor: colors.palette.neutral900,
+  shadowOpacity: 0.08,
+  shadowRadius: 4,
+  elevation: 2,
+})
+
+const $habitInfo: ThemedStyle<ViewStyle> = () => ({
+  flex: 1,
+})
+
+const $habitName: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.text,
+  fontSize: 16,
+  fontWeight: "600",
+})
+
+const $habitTime: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
+  fontSize: 14,
+  marginTop: 4,
+})
+
+const $markButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.tint,
+  paddingHorizontal: 16,
+  paddingVertical: 8,
+  borderRadius: 8,
+})
+
+const $doneButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.palette.neutral400,
+  paddingHorizontal: 16,
+  paddingVertical: 8,
+  borderRadius: 8,
+})
 
 const $buttonText: ThemedStyle<TextStyle> = ({ colors }) => {
   return {

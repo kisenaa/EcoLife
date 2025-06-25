@@ -128,7 +128,8 @@ export const Home: React.FC<DashboardTabScreenProps<"Home">> = function Home(_pr
           quiz={{
             question: "What is the most effective way to save water at home?",
             answer: "Fixing leaks promptly.",
-            explanation: "Leaking faucets and pipes can waste a significant amount of water over time. Fixing them is one of the most effective ways to conserve water at home.",
+            explanation:
+              "Leaking faucets and pipes can waste a significant amount of water over time. Fixing them is one of the most effective ways to conserve water at home.",
           }}
         />
       </View>

@@ -4,16 +4,17 @@ import { TextStyle, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "../components"
 import { translate } from "@/i18n"
-import { DemoShowroomScreen, DemoDebugScreen, DemoCommunityScreen } from "../screens"
+import { DemoShowroomScreen, DemoCommunityScreen, EduScreen } from "../screens"
 import type { ThemedStyle } from "@/theme"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { Home } from "@/screens/DashboardScreen/Home"
-import { History } from "@/screens/DashboardScreen/History"
-
+import { DemoDebugStack } from "./stack/DemoDebug"
+import { LearnStack } from "./stack/Learn"
+import { Icon as MdIcon } from "react-native-paper"
 export type DashboardTabParamList = {
   Home: undefined
-  History: undefined
+  Learn: undefined
   DemoCommunity: undefined
   DemoShowroom: { queryIndex?: string; itemIndex?: string }
   DemoDebug: undefined
@@ -67,11 +68,11 @@ export function DashboardNavigator() {
         }}
       />
       <Tab.Screen
-        name="History"
-        component={History}
+        name="Learn"
+        component={LearnStack}
         options={{
-          tabBarLabel: "History",
-          tabBarIcon: ({ focused }) => <Icon icon="history" color={focused ? colors.tint : colors.tintInactive} size={32} />,
+          tabBarLabel: "Education",
+          tabBarIcon: ({ focused }) => <MdIcon source="library" color={focused ? colors.tint : colors.tintInactive} size={32} />,
         }}
       />
       <Tab.Screen
@@ -105,7 +106,7 @@ export function DashboardNavigator() {
       */}
       <Tab.Screen
         name="DemoDebug"
-        component={DemoDebugScreen}
+        component={DemoDebugStack}
         options={{
           tabBarLabel: "Settings",
           tabBarIcon: ({ focused }) => <Icon icon="settings" color={focused ? colors.tint : colors.tintInactive} size={30} />,

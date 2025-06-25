@@ -79,3 +79,24 @@ export function clear(): void {
     storage.clearAll()
   } catch {}
 }
+
+export const mmkvAsyncStorage = {
+  getItem: async (key: string): Promise<string | null> => {
+    try {
+      const value = storage.getString(key)
+      return value ?? null
+    } catch {
+      return null
+    }
+  },
+  setItem: async (key: string, value: string): Promise<void> => {
+    try {
+      storage.set(key, value)
+    } catch {}
+  },
+  removeItem: async (key: string): Promise<void> => {
+    try {
+      storage.delete(key)
+    } catch {}
+  },
+}

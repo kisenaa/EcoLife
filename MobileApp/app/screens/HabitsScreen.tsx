@@ -67,23 +67,10 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
     }
   }
 
-  const resetModalState = () => {
-    setNewHabitName("")
-    setNewHabitStart("")
-    setNewHabitEnd("")
-    setStartDate(new Date())
-    setEndDate(new Date())
-    setCreating(false)
-    setEditMode(false)
-    setEditHabitId(null)
-  }
-
   const handleOpenModal = () => {
     resetModalState()
     setModalVisible(true)
   }
-
-  const handleCloseModal = () => setModalVisible(false)
 
   const handleAddHabit = async () => {
     if (!newHabitName || !newHabitStart || !userId) return
@@ -98,7 +85,10 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
         total: 1,
       })
       if (error) throw error
-      handleCloseModal()
+      setModalVisible(false) // Close modal first
+      setTimeout(() => {
+        resetModalState() // Reset state after modal closes
+      }, 100)
       await loadHabits(userId)
     } catch (e: any) {
       setError(e.message || "Failed to add habit")
@@ -106,7 +96,6 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
       setCreating(false)
     }
   }
-
   const markHabitDone = async (habitId: number) => {
     if (!userId) return
     setLoading(true)
@@ -173,9 +162,10 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
         reminder_end: newHabitEnd || null,
       })
       if (error) throw error
-      setEditMode(false)
-      setEditHabitId(null)
-      handleCloseModal()
+      setModalVisible(false) // Close modal first
+      setTimeout(() => {
+        resetModalState() // Reset state after modal closes
+      }, 100)
       await loadHabits(userId)
     } catch (e: any) {
       setError(e.message || "Failed to edit habit")
@@ -219,39 +209,64 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
 
   const habitsKey = useMemo(() => habitList.map((h) => `${h.id}:${h.completed}`).join("|"), [habitList])
 
+  const resetModalState = () => {
+    setNewHabitName("")
+    setNewHabitStart("")
+    setNewHabitEnd("")
+    setStartDate(new Date())
+    setEndDate(new Date())
+    setCreating(false)
+    setEditMode(false)
+    setEditHabitId(null)
+    // Remove this line - don't set modal visible here
+    // setModalVisible(false)
+  }
+
+  const handleCloseModal = () => {
+    setModalVisible(false)
+    // Use setTimeout to ensure state is reset after modal closes
+    setTimeout(() => {
+      resetModalState()
+    }, 500)
+  }
+
   return (
     <>
-      <Screen preset="fixed" contentContainerStyle={themed($container)}>
+      <Screen preset="scroll" contentContainerStyle={themed($container)} safeAreaEdges={["top"]}>
         <Text preset="heading" style={themed($heading)} text="Your Habits" />
         <Text preset="subheading" style={themed($subheading)} text={`Completed: ${completedCount} / ${totalCount}`} />
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-          <View style={themed($graphContainer)}>
-            <View style={themed($rangeSelector)}>
-              {TIME_RANGES.map((range) => (
-                <Text
-                  key={range}
-                  style={themed(selectedRange === range ? $selectedRangeButton : $rangeButton)}
-                  onPress={() => setSelectedRange(range)}
-                >
-                  {range + "h"}
-                </Text>
-              ))}
-            </View>
-            <HabitTimeGraph key={habitsKey} habits={displayHabits} timeRange={selectedRange as 24 | 12 | 6 | 3} />
+        <View style={themed($graphContainer)}>
+          <View style={themed($rangeSelector)}>
+            {TIME_RANGES.map((range) => (
+              <Text
+                key={range}
+                style={themed(selectedRange === range ? $selectedRangeButton : $rangeButton)}
+                onPress={() => setSelectedRange(range)}
+              >
+                {range + "h"}
+              </Text>
+            ))}
           </View>
-          <HabitList
-            habits={displayHabits}
-            habitsKey={habitsKey}
-            loading={loading}
-            error={error}
-            onEdit={handleEditHabit}
-            onRemove={handleRemoveHabit}
-            onMarkDone={markHabitDone}
-            onMarkUndone={markHabitUndone}
-          />
-        </ScrollView>
-        <HabitFAB onPress={handleOpenModal} />
+          <HabitTimeGraph key={habitsKey} habits={displayHabits} timeRange={selectedRange as 24 | 12 | 6 | 3} />
+        </View>
+
+        <HabitList
+          habits={displayHabits}
+          habitsKey={habitsKey}
+          loading={loading}
+          error={error}
+          onEdit={handleEditHabit}
+          onRemove={handleRemoveHabit}
+          onMarkDone={markHabitDone}
+          onMarkUndone={markHabitUndone}
+        />
+
+        {/* Add padding for FAB */}
+        <View style={{ height: 120 }} />
       </Screen>
+
+      <HabitFAB onPress={handleOpenModal} />
+
       <HabitModal
         visible={modalVisible}
         editMode={editMode}
@@ -270,6 +285,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
           handleCloseModal()
         }}
       />
+
       <DatePicker
         modal
         open={isStartPickerVisible}
@@ -282,6 +298,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
         }}
         onCancel={() => setStartPickerVisible(false)}
       />
+
       <DatePicker
         modal
         open={isEndPickerVisible}
@@ -299,10 +316,9 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
 }
 
 const $container = ({ spacing, colors }: any) => ({
-  flex: 1,
   backgroundColor: colors.background,
-  marginTop: spacing.xl,
-  padding: spacing.lg,
+  paddingHorizontal: spacing.lg,
+  paddingTop: spacing.lg,
 })
 
 const $heading = ({ spacing, colors }: any) => ({
@@ -351,4 +367,11 @@ const $selectedRangeButton = ({ colors, spacing }: any) => ({
   paddingVertical: spacing.xs,
   minWidth: 48,
   marginHorizontal: 2,
+})
+
+const $fabWrapper = ({ spacing }: any) => ({
+  position: "absolute",
+  bottom: 0,
+  right: spacing.lg,
+  zIndex: 1,
 })
