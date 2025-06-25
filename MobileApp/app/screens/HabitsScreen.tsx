@@ -67,23 +67,10 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
     }
   }
 
-  const resetModalState = () => {
-    setNewHabitName("")
-    setNewHabitStart("")
-    setNewHabitEnd("")
-    setStartDate(new Date())
-    setEndDate(new Date())
-    setCreating(false)
-    setEditMode(false)
-    setEditHabitId(null)
-  }
-
   const handleOpenModal = () => {
     resetModalState()
     setModalVisible(true)
   }
-
-  const handleCloseModal = () => setModalVisible(false)
 
   const handleAddHabit = async () => {
     if (!newHabitName || !newHabitStart || !userId) return
@@ -98,7 +85,10 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
         total: 1,
       })
       if (error) throw error
-      handleCloseModal()
+      setModalVisible(false) // Close modal first
+      setTimeout(() => {
+        resetModalState() // Reset state after modal closes
+      }, 100)
       await loadHabits(userId)
     } catch (e: any) {
       setError(e.message || "Failed to add habit")
@@ -106,7 +96,6 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
       setCreating(false)
     }
   }
-
   const markHabitDone = async (habitId: number) => {
     if (!userId) return
     setLoading(true)
@@ -173,9 +162,10 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
         reminder_end: newHabitEnd || null,
       })
       if (error) throw error
-      setEditMode(false)
-      setEditHabitId(null)
-      handleCloseModal()
+      setModalVisible(false) // Close modal first
+      setTimeout(() => {
+        resetModalState() // Reset state after modal closes
+      }, 100)
       await loadHabits(userId)
     } catch (e: any) {
       setError(e.message || "Failed to edit habit")
@@ -219,9 +209,29 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
 
   const habitsKey = useMemo(() => habitList.map((h) => `${h.id}:${h.completed}`).join("|"), [habitList])
 
+  const resetModalState = () => {
+    setNewHabitName("")
+    setNewHabitStart("")
+    setNewHabitEnd("")
+    setStartDate(new Date())
+    setEndDate(new Date())
+    setCreating(false)
+    setEditMode(false)
+    setEditHabitId(null)
+    // Remove this line - don't set modal visible here
+    // setModalVisible(false)
+  }
+
+  const handleCloseModal = () => {
+    setModalVisible(false)
+    // Use setTimeout to ensure state is reset after modal closes
+    setTimeout(() => {
+      resetModalState()
+    }, 500)
+  }
+
   return (
     <>
-      <Screen preset="scroll" contentContainerStyle={themed($container)} safeAreaEdges={["top"]}>
       <Screen preset="scroll" contentContainerStyle={themed($container)} safeAreaEdges={["top"]}>
         <Text preset="heading" style={themed($heading)} text="Your Habits" />
         <Text preset="subheading" style={themed($subheading)} text={`Completed: ${completedCount} / ${totalCount}`} />

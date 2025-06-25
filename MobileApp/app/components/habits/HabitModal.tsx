@@ -35,10 +35,13 @@ export const HabitModal: React.FC<HabitModalProps> = ({
   onCancel,
 }) => {
   const { themed, theme } = useAppTheme({ useForest: true })
+
+  if (!visible) return null
+
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
-      <View style={themed($modalOverlay)}>
-        <View style={themed($modalContent)}>
+      <TouchableOpacity style={themed($modalOverlay)} activeOpacity={1} onPress={onClose}>
+        <TouchableOpacity style={themed($modalContent)} activeOpacity={1} onPress={(e) => e.stopPropagation()}>
           <Text
             preset="heading"
             text={editMode ? "Edit Reminder" : "Add Reminder"}
@@ -82,8 +85,8 @@ export const HabitModal: React.FC<HabitModalProps> = ({
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
+        </TouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   )
 }
