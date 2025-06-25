@@ -1,6 +1,6 @@
 import React from "react"
-import { FlatList, TouchableOpacity, View, Alert } from "react-native"
-import { Text, Button } from "../../components"
+import { View, Alert, TouchableOpacity } from "react-native"
+import { Text, Button } from "../"
 import { useAppTheme } from "@/utils/useAppTheme"
 import type { ThemedStyle } from "@/theme"
 import type { ViewStyle, TextStyle } from "react-native"
@@ -9,18 +9,20 @@ interface Habit {
   id: number
   name: string
   time: string
-  completed: boolean
+  completed: number
+  reminder_start?: string
+  reminder_end?: string
 }
 
 interface HabitListProps {
   habits: Habit[]
   habitsKey: string
   loading: boolean
-  error: string | null
+  error?: string | null
   onEdit: (habit: Habit) => void
-  onRemove: (id: number) => void
-  onMarkDone: (id: number) => void
-  onMarkUndone: (id: number) => void
+  onRemove: (habitId: number) => void
+  onMarkDone: (habitId: number) => void
+  onMarkUndone: (habitId: number) => void
 }
 
 export const HabitList: React.FC<HabitListProps> = ({
@@ -34,20 +36,38 @@ export const HabitList: React.FC<HabitListProps> = ({
   onMarkUndone,
 }) => {
   const { themed, theme } = useAppTheme({ useForest: true })
-  return loading ? (
-    <Text style={{ textAlign: "center", marginTop: 32 }}>Loading...</Text>
-  ) : error ? (
-    <Text style={{ color: theme.colors.error, textAlign: "center", marginTop: 32 }}>{error}</Text>
-  ) : (
-    <FlatList
-      key={habitsKey}
-      data={habits}
-      keyExtractor={(item) => item.id?.toString()}
-      contentContainerStyle={themed($list)}
-      renderItem={({ item }) => (
+
+  if (loading) {
+    return (
+      <View style={themed($loadingContainer)}>
+        <Text style={themed($loadingText)} text="Loading habits..." />
+      </View>
+    )
+  }
+
+  if (error) {
+    return (
+      <View style={themed($errorContainer)}>
+        <Text style={themed($errorText)} text={error} />
+      </View>
+    )
+  }
+
+  if (habits.length === 0) {
+    return (
+      <View style={themed($emptyContainer)}>
+        <Text style={themed($emptyText)} text="No habits yet. Tap + to add your first habit!" />
+      </View>
+    )
+  }
+
+  return (
+    <View style={themed($container)}>
+      {habits.map((item) => (
         <TouchableOpacity
+          key={item.id}
           onLongPress={() => {
-            Alert.alert(item.name, undefined, [
+            Alert.alert(item.name, "Choose an action:", [
               { text: "Edit", onPress: () => onEdit(item) },
               { text: "Remove", style: "destructive", onPress: () => onRemove(item.id) },
               { text: "Cancel", style: "cancel" },
@@ -64,7 +84,6 @@ export const HabitList: React.FC<HabitListProps> = ({
               text={item.completed ? "Done" : "Mark Done"}
               style={themed(item.completed ? $doneButton : $markButton)}
               textStyle={themed($buttonText)}
-              disabled={false}
               onPress={() => {
                 if (item.completed) {
                   Alert.alert("Undo Reminder", "Do you want to mark this reminder as not done?", [
@@ -78,79 +97,90 @@ export const HabitList: React.FC<HabitListProps> = ({
             />
           </View>
         </TouchableOpacity>
-      )}
-      scrollEnabled={false}
-    />
+      ))}
+    </View>
   )
 }
 
-const $list: ThemedStyle<ViewStyle> = ({}) => ({
-  gap: 16,
+const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  gap: spacing.md,
 })
 
-const $habitCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => {
-  return {
-    backgroundColor: colors.palette.neutral100,
-    borderRadius: 16,
-    padding: spacing.md,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    shadowColor: colors.palette.neutral900,
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
-    marginBottom: spacing.sm,
-  }
-}
+const $loadingContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  padding: spacing.lg,
+  alignItems: "center",
+})
 
-const $habitInfo: ThemedStyle<ViewStyle> = ({}) => {
-  return {
-    flex: 1,
-    flexDirection: "column",
-  }
-}
+const $loadingText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
+})
 
-const $habitName: ThemedStyle<TextStyle> = ({ colors }) => {
-  return {
-    color: colors.text,
-    fontWeight: "bold",
-    fontSize: 16,
-    marginBottom: 2,
-  }
-}
+const $errorContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  padding: spacing.lg,
+  alignItems: "center",
+})
 
-const $habitTime: ThemedStyle<TextStyle> = ({ colors }) => {
-  return {
-    color: colors.textDim,
-    fontSize: 14,
-  }
-}
+const $errorText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.error,
+  textAlign: "center",
+})
 
-const $markButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => {
-  return {
-    backgroundColor: colors.tint,
-    borderRadius: 8,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    minWidth: 90,
-  }
-}
+const $emptyContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  padding: spacing.xl,
+  alignItems: "center",
+})
 
-const $doneButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => {
-  return {
-    backgroundColor: colors.palette.neutral300,
-    borderRadius: 8,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    minWidth: 90,
-  }
-}
+const $emptyText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
+  textAlign: "center",
+  fontStyle: "italic",
+})
 
-const $buttonText: ThemedStyle<TextStyle> = ({ colors }) => {
-  return {
-    color: colors.text,
-    fontWeight: "bold",
-    textAlign: "center",
-  }
-}
+const $habitCard: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+  backgroundColor: colors.background,
+  padding: spacing.md,
+  borderRadius: 12,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  shadowColor: colors.palette.neutral900,
+  shadowOpacity: 0.08,
+  shadowRadius: 4,
+  elevation: 2,
+})
+
+const $habitInfo: ThemedStyle<ViewStyle> = () => ({
+  flex: 1,
+})
+
+const $habitName: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.text,
+  fontSize: 16,
+  fontWeight: "600",
+})
+
+const $habitTime: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
+  fontSize: 14,
+  marginTop: 4,
+})
+
+const $markButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.tint,
+  paddingHorizontal: 16,
+  paddingVertical: 8,
+  borderRadius: 8,
+})
+
+const $doneButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.palette.neutral400,
+  paddingHorizontal: 16,
+  paddingVertical: 8,
+  borderRadius: 8,
+})
+
+const $buttonText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.background,
+  fontSize: 14,
+  fontWeight: "600",
+})

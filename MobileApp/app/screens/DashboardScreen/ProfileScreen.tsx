@@ -21,6 +21,7 @@ import { DemoDebugStackScreenProps } from "@/navigators/stack/DemoDebug"
 import { getCurrentUser, signOut, updatePassword } from "@/services/supabase/supabaseAuth"
 import { fetchUserProfile, updateUserProfile, createUserProfile } from "@/services/supabase/supabaseData"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { useStores } from "@/models"
 
 interface ProfileScreenProps extends DemoDebugStackScreenProps<"Profile"> {}
 
@@ -55,6 +56,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = function ProfileScree
   const [newPasswordVisible, setNewPasswordVisible] = useState(false)
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
   const [passwordChanging, setPasswordChanging] = useState(false)
+
+  const {
+    authenticationStore: { setAuthUser },
+  } = useStores()
 
   const handleChangePassword = async () => {
     // Dismiss keyboard first
@@ -219,6 +224,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = function ProfileScree
       setProfile(updatedProfile)
       setEditedProfile(updatedProfile)
       setIsEditing(false)
+      setAuthUser(updatedProfile.username != "" && updatedProfile.username ? updatedProfile.username : updatedProfile.email)
       showSnackbar("Profile updated successfully!")
     } catch (error: any) {
       console.error("Error saving profile:", error)

@@ -5,7 +5,7 @@ import { Button, PressableIcon, Screen, Text, TextField, TextFieldAccessoryProps
 import { AppStackScreenProps } from "../navigators"
 import type { ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
-import { signInWithEmail } from "@/services/supabase"
+import { fetchUserProfile, signInWithEmail } from "@/services/supabase"
 import { useStores } from "../models"
 
 const appLogo = require("../../assets/images/logo.png")
@@ -27,15 +27,25 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
   } = useAppTheme()
 
   async function login() {
-    setIsLoading(true)
-    setError("")
-    const { data, error: supaError } = await signInWithEmail(authEmail, authPassword)
-    setIsLoading(false)
-    if (supaError) {
-      setError(supaError.message)
-      return
+    try {
+      setIsLoading(true)
+      setError("")
+      const { data, error: supaError } = await signInWithEmail(authEmail, authPassword)
+      setIsLoading(false)
+      if (supaError) {
+        setError(supaError.message)
+        return
+      }
+      authenticationStore.setAuthToken(data?.session?.access_token)
+      authenticationStore.setAuthEmail(authEmail)
+
+      const { data: profileData, error } = await fetchUserProfile(data.user.id)
+      authenticationStore.setAuthUser(profileData?.username || data.user.email)
+    } catch (error) {
+      setIsLoading(false)
+      setError("An unexpected error occurred. Please try again.")
+      console.error("Login error:", error)
     }
-    authenticationStore.setAuthToken(data?.session?.access_token)
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(

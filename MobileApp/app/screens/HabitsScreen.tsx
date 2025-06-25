@@ -222,6 +222,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
   return (
     <>
       <Screen preset="scroll" contentContainerStyle={themed($container)} safeAreaEdges={["top"]}>
+      <Screen preset="scroll" contentContainerStyle={themed($container)} safeAreaEdges={["top"]}>
         <Text preset="heading" style={themed($heading)} text="Your Habits" />
         <Text preset="subheading" style={themed($subheading)} text={`Completed: ${completedCount} / ${totalCount}`} />
         <View style={themed($graphContainer)}>
@@ -238,6 +239,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
           </View>
           <HabitTimeGraph key={habitsKey} habits={displayHabits} timeRange={selectedRange as 24 | 12 | 6 | 3} />
         </View>
+
         <HabitList
           habits={displayHabits}
           habitsKey={habitsKey}
@@ -248,10 +250,13 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
           onMarkDone={markHabitDone}
           onMarkUndone={markHabitUndone}
         />
+
+        {/* Add padding for FAB */}
+        <View style={{ height: 120 }} />
       </Screen>
-      <View style={themed($fabWrapper)}>
-        <HabitFAB onPress={handleOpenModal} />
-      </View>
+
+      <HabitFAB onPress={handleOpenModal} />
+
       <HabitModal
         visible={modalVisible}
         editMode={editMode}
@@ -270,6 +275,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
           handleCloseModal()
         }}
       />
+
       <DatePicker
         modal
         open={isStartPickerVisible}
@@ -282,6 +288,7 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
         }}
         onCancel={() => setStartPickerVisible(false)}
       />
+
       <DatePicker
         modal
         open={isEndPickerVisible}
@@ -299,10 +306,9 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
 }
 
 const $container = ({ spacing, colors }: any) => ({
-  flex: 1,
   backgroundColor: colors.background,
-  marginTop: spacing.xl,
-  padding: spacing.lg,
+  paddingHorizontal: spacing.lg,
+  paddingTop: spacing.lg,
 })
 
 const $heading = ({ spacing, colors }: any) => ({
