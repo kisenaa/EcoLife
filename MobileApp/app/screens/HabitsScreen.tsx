@@ -221,37 +221,37 @@ export const HabitsScreen: React.FC<AppStackScreenProps<"Habits">> = function Ha
 
   return (
     <>
-      <Screen preset="fixed" contentContainerStyle={themed($container)}>
+      <Screen preset="scroll" contentContainerStyle={themed($container)} safeAreaEdges={["top"]}>
         <Text preset="heading" style={themed($heading)} text="Your Habits" />
         <Text preset="subheading" style={themed($subheading)} text={`Completed: ${completedCount} / ${totalCount}`} />
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-          <View style={themed($graphContainer)}>
-            <View style={themed($rangeSelector)}>
-              {TIME_RANGES.map((range) => (
-                <Text
-                  key={range}
-                  style={themed(selectedRange === range ? $selectedRangeButton : $rangeButton)}
-                  onPress={() => setSelectedRange(range)}
-                >
-                  {range + "h"}
-                </Text>
-              ))}
-            </View>
-            <HabitTimeGraph key={habitsKey} habits={displayHabits} timeRange={selectedRange as 24 | 12 | 6 | 3} />
+        <View style={themed($graphContainer)}>
+          <View style={themed($rangeSelector)}>
+            {TIME_RANGES.map((range) => (
+              <Text
+                key={range}
+                style={themed(selectedRange === range ? $selectedRangeButton : $rangeButton)}
+                onPress={() => setSelectedRange(range)}
+              >
+                {range + "h"}
+              </Text>
+            ))}
           </View>
-          <HabitList
-            habits={displayHabits}
-            habitsKey={habitsKey}
-            loading={loading}
-            error={error}
-            onEdit={handleEditHabit}
-            onRemove={handleRemoveHabit}
-            onMarkDone={markHabitDone}
-            onMarkUndone={markHabitUndone}
-          />
-        </ScrollView>
-        <HabitFAB onPress={handleOpenModal} />
+          <HabitTimeGraph key={habitsKey} habits={displayHabits} timeRange={selectedRange as 24 | 12 | 6 | 3} />
+        </View>
+        <HabitList
+          habits={displayHabits}
+          habitsKey={habitsKey}
+          loading={loading}
+          error={error}
+          onEdit={handleEditHabit}
+          onRemove={handleRemoveHabit}
+          onMarkDone={markHabitDone}
+          onMarkUndone={markHabitUndone}
+        />
       </Screen>
+      <View style={themed($fabWrapper)}>
+        <HabitFAB onPress={handleOpenModal} />
+      </View>
       <HabitModal
         visible={modalVisible}
         editMode={editMode}
@@ -351,4 +351,11 @@ const $selectedRangeButton = ({ colors, spacing }: any) => ({
   paddingVertical: spacing.xs,
   minWidth: 48,
   marginHorizontal: 2,
+})
+
+const $fabWrapper = ({ spacing }: any) => ({
+  position: "absolute",
+  bottom: 0,
+  right: spacing.lg,
+  zIndex: 1,
 })
